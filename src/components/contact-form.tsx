@@ -27,9 +27,9 @@ export function ContactForm({ fields }: ContactFormProps) {
   };
 
   return (
-    <Card>
+    <Card className="bg-card shadow-sm">
       <CardHeader>
-        <CardTitle>İletişim Formu</CardTitle>
+        <CardTitle className="font-display">İletişim Formu</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -73,7 +73,7 @@ export function ContactForm({ fields }: ContactFormProps) {
               </div>
             );
           })}
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" variant="default">
             Gönder
           </Button>
         </form>
