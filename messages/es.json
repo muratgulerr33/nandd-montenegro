@@ -1,7 +1,70 @@
 {
-  "HomePage": {
+  "Nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "process": "Proceso",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "bookConsultation": "Reservar consulta"
+  },
+  "Cta": {
+    "bookConsultation": "Reservar consulta",
+    "exploreServices": "Explorar servicios"
+  },
+  "Home": {
     "title": "Nueva Vida Llave en Mano — Montenegro",
-    "tagline": "Descubre la vida de tus sueños en Montenegro"
+    "subtitle": "Descubre la vida de tus sueños en Montenegro. Nuestro equipo profesional proporciona soluciones llave en mano.",
+    "valueProps": {
+      "property": {
+        "title": "Búsqueda de propiedades",
+        "desc": "Servicio completo de investigación y evaluación para encontrar la propiedad perfecta para ti."
+      },
+      "legal": {
+        "title": "Legal y residencia",
+        "desc": "Apoyo profesional para permisos de residencia, ciudadanía y todos los procesos legales."
+      },
+      "turnkey": {
+        "title": "Traslado llave en mano",
+        "desc": "Gestionamos todo el proceso para ti, solo disfruta de tu nueva vida."
+      }
+    },
+    "howItWorks": {
+      "title": "Cómo funciona",
+      "step1": {
+        "title": "Consulta inicial",
+        "desc": "Escuchamos tus necesidades y preparamos un plan personalizado."
+      },
+      "step2": {
+        "title": "Gestión del proceso",
+        "desc": "Gestionamos todos los pasos para ti y proporcionamos actualizaciones regulares."
+      },
+      "step3": {
+        "title": "Entrega llave en mano",
+        "desc": "¡Estás listo para comenzar tu nueva vida en Montenegro!"
+      }
+    }
+  },
+  "Pages": {
+    "services": {
+      "title": "Nuestros servicios",
+      "subtitle": "Soluciones completas para la vida de tus sueños en Montenegro"
+    },
+    "process": {
+      "title": "Nuestro proceso",
+      "subtitle": "Un enfoque personalizado, transparente y profesional"
+    },
+    "about": {
+      "title": "Acerca de nosotros",
+      "subtitle": "Como N-AND-D Construction, te ayudamos a construir una nueva vida en Montenegro"
+    },
+    "contact": {
+      "title": "Contacto",
+      "subtitle": "Ponte en contacto con nosotros para tus preguntas"
+    }
+  },
+  "Footer": {
+    "description": "Descubre la vida de tus sueños en Montenegro. Nueva vida llave en mano.",
+    "quickLinks": "Enlaces rápidos",
+    "rights": "Todos los derechos reservados."
   }
 }
-

@@ -1,7 +1,70 @@
 {
-  "HomePage": {
+  "Nav": {
+    "home": "Ana Sayfa",
+    "services": "Hizmetler",
+    "process": "Süreç",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "bookConsultation": "Danışmanlık Al"
+  },
+  "Cta": {
+    "bookConsultation": "Danışmanlık Al",
+    "exploreServices": "Hizmetleri Keşfet"
+  },
+  "Home": {
     "title": "Anahtar Teslim Yeni Bir Hayat — Montenegro",
-    "tagline": "Montenegro'da hayalinizdeki yaşamı keşfedin"
+    "subtitle": "Montenegro'da hayalinizdeki yaşamı keşfedin. Profesyonel ekibimiz size anahtar teslim çözümler sunar.",
+    "valueProps": {
+      "property": {
+        "title": "Emlak Kaynak Bulma",
+        "desc": "Size en uygun mülkü bulmak için kapsamlı araştırma ve değerlendirme hizmeti."
+      },
+      "legal": {
+        "title": "Yasal & İkamet",
+        "desc": "İkamet izni, vatandaşlık ve tüm yasal süreçlerde profesyonel destek."
+      },
+      "turnkey": {
+        "title": "Anahtar Teslim Taşınma",
+        "desc": "Tüm süreci sizin için yönetiyoruz, siz sadece yeni hayatınızın keyfini çıkarın."
+      }
+    },
+    "howItWorks": {
+      "title": "Nasıl Çalışır?",
+      "step1": {
+        "title": "İlk Görüşme",
+        "desc": "İhtiyaçlarınızı dinliyoruz ve size özel bir plan hazırlıyoruz."
+      },
+      "step2": {
+        "title": "Süreç Yönetimi",
+        "desc": "Tüm adımları sizin için yönetiyoruz ve düzenli güncellemeler sağlıyoruz."
+      },
+      "step3": {
+        "title": "Anahtar Teslim",
+        "desc": "Montenegro'da yeni hayatınıza başlamaya hazırsınız!"
+      }
+    }
+  },
+  "Pages": {
+    "services": {
+      "title": "Hizmetlerimiz",
+      "subtitle": "Montenegro'da hayalinizdeki yaşam için kapsamlı çözümler"
+    },
+    "process": {
+      "title": "Sürecimiz",
+      "subtitle": "Size özel, şeffaf ve profesyonel bir yaklaşım"
+    },
+    "about": {
+      "title": "Hakkımızda",
+      "subtitle": "N-AND-D Construction olarak Montenegro'da yeni bir hayat kurmanıza yardımcı oluyoruz"
+    },
+    "contact": {
+      "title": "İletişim",
+      "subtitle": "Sorularınız için bizimle iletişime geçin"
+    }
+  },
+  "Footer": {
+    "description": "Montenegro'da hayalinizdeki yaşamı keşfedin. Anahtar teslim yeni bir hayat.",
+    "quickLinks": "Hızlı Linkler",
+    "rights": "Tüm hakları saklıdır."
   }
 }
-

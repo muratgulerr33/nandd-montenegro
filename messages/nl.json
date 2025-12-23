@@ -1,7 +1,70 @@
 {
-  "HomePage": {
+  "Nav": {
+    "home": "Home",
+    "services": "Diensten",
+    "process": "Proces",
+    "about": "Over ons",
+    "contact": "Contact",
+    "bookConsultation": "Consultatie boeken"
+  },
+  "Cta": {
+    "bookConsultation": "Consultatie boeken",
+    "exploreServices": "Diensten verkennen"
+  },
+  "Home": {
     "title": "Sleutelklare Nieuw Leven — Montenegro",
-    "tagline": "Ontdek uw droomleven in Montenegro"
+    "subtitle": "Ontdek uw droomleven in Montenegro. Ons professionele team biedt sleutelklare oplossingen.",
+    "valueProps": {
+      "property": {
+        "title": "Eigendom zoeken",
+        "desc": "Uitgebreide onderzoeks- en evaluatiedienst om de perfecte eigendom voor u te vinden."
+      },
+      "legal": {
+        "title": "Juridisch en verblijfsvergunning",
+        "desc": "Professionele ondersteuning voor verblijfsvergunningen, staatsburgerschap en alle juridische processen."
+      },
+      "turnkey": {
+        "title": "Sleutelklare verhuizing",
+        "desc": "Wij beheren het hele proces voor u, u geniet gewoon van uw nieuwe leven."
+      }
+    },
+    "howItWorks": {
+      "title": "Hoe het werkt",
+      "step1": {
+        "title": "Eerste consultatie",
+        "desc": "We luisteren naar uw behoeften en bereiden een op maat gemaakt plan voor."
+      },
+      "step2": {
+        "title": "Procesbeheer",
+        "desc": "We beheren alle stappen voor u en bieden regelmatige updates."
+      },
+      "step3": {
+        "title": "Sleutelklare levering",
+        "desc": "U bent klaar om uw nieuwe leven in Montenegro te beginnen!"
+      }
+    }
+  },
+  "Pages": {
+    "services": {
+      "title": "Onze diensten",
+      "subtitle": "Uitgebreide oplossingen voor uw droomleven in Montenegro"
+    },
+    "process": {
+      "title": "Ons proces",
+      "subtitle": "Een op maat gemaakte, transparante en professionele aanpak"
+    },
+    "about": {
+      "title": "Over ons",
+      "subtitle": "Als N-AND-D Construction helpen we u een nieuw leven op te bouwen in Montenegro"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Neem contact met ons op voor uw vragen"
+    }
+  },
+  "Footer": {
+    "description": "Ontdek uw droomleven in Montenegro. Sleutelklare nieuw leven.",
+    "quickLinks": "Snelle links",
+    "rights": "Alle rechten voorbehouden."
   }
 }
-

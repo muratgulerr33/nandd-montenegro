@@ -1,7 +1,70 @@
 {
-  "HomePage": {
+  "Nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "process": "Processus",
+    "about": "À propos",
+    "contact": "Contact",
+    "bookConsultation": "Réserver une consultation"
+  },
+  "Cta": {
+    "bookConsultation": "Réserver une consultation",
+    "exploreServices": "Explorer les services"
+  },
+  "Home": {
     "title": "Nouvelle Vie Clé en Main — Monténégro",
-    "tagline": "Découvrez la vie de vos rêves au Monténégro"
+    "subtitle": "Découvrez la vie de vos rêves au Monténégro. Notre équipe professionnelle fournit des solutions clés en main.",
+    "valueProps": {
+      "property": {
+        "title": "Recherche de propriété",
+        "desc": "Service complet de recherche et d'évaluation pour trouver la propriété parfaite pour vous."
+      },
+      "legal": {
+        "title": "Juridique et résidence",
+        "desc": "Support professionnel pour les permis de séjour, la citoyenneté et tous les processus juridiques."
+      },
+      "turnkey": {
+        "title": "Déménagement clé en main",
+        "desc": "Nous gérons tout le processus pour vous, vous profitez simplement de votre nouvelle vie."
+      }
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1": {
+        "title": "Consultation initiale",
+        "desc": "Nous écoutons vos besoins et préparons un plan personnalisé."
+      },
+      "step2": {
+        "title": "Gestion du processus",
+        "desc": "Nous gérons toutes les étapes pour vous et fournissons des mises à jour régulières."
+      },
+      "step3": {
+        "title": "Livraison clé en main",
+        "desc": "Vous êtes prêt à commencer votre nouvelle vie au Monténégro!"
+      }
+    }
+  },
+  "Pages": {
+    "services": {
+      "title": "Nos services",
+      "subtitle": "Solutions complètes pour la vie de vos rêves au Monténégro"
+    },
+    "process": {
+      "title": "Notre processus",
+      "subtitle": "Une approche personnalisée, transparente et professionnelle"
+    },
+    "about": {
+      "title": "À propos de nous",
+      "subtitle": "En tant que N-AND-D Construction, nous vous aidons à construire une nouvelle vie au Monténégro"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Contactez-nous pour vos questions"
+    }
+  },
+  "Footer": {
+    "description": "Découvrez la vie de vos rêves au Monténégro. Nouvelle vie clé en main.",
+    "quickLinks": "Liens rapides",
+    "rights": "Tous droits réservés."
   }
 }
-
