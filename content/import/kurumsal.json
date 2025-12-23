@@ -1,0 +1,103 @@
+{
+  "slug": "kurumsal",
+  "title": "Kurumsal – N AND D",
+  "content": {
+    "headings": [
+      {
+        "level": "h2",
+        "text": "hAKKIMIZDA"
+      },
+      {
+        "level": "h1",
+        "text": "BİZ KİMİZ?"
+      },
+      {
+        "level": "h4",
+        "text": "misyonumuz"
+      },
+      {
+        "level": "h4",
+        "text": "vizyonumuz"
+      }
+    ],
+    "paragraphs": [
+      "N.and.D Construction Company, Montenegro’nun Bar şehrindeki Dobro Vodo bölgesinde yer alan, deniz manzaralı konut projeleri sunan bir gayrimenkul geliştirme şirketidir. Seafeild Residence ve Asis Adriatic projelerimiz, yatırımcılarımıza uzun yaz sezonu boyunca değer kazanan gayrimenkuller sunar. Montenegro, 7-8 ay boyunca denize girilebilen, yaz aylarında nüfusun ve turizmin ciddi şekilde arttığı bir bölge olduğu için, projelerimiz yüksek talep görmektedir.",
+      "Misyonumuz, yatırımcılarımıza Montenegro’da sürdürülebilir, değer kazanan ve uzun vadede yüksek getiri sağlayan gayrimenkul fırsatları sunmaktır. Yatırımcılarımızın konforunu ve memnuniyetini en üst düzeyde tutarak, her projede kalite ve güveni ön planda tutuyoruz.",
+      "Vizyonumuz, Montenegro’nun sahil kesiminde modern ve yenilikçi projeler geliştirerek bölgeyi uluslararası yatırımcılar için cazibe merkezi hâline getirmektir. Seafeild Residence ve Asis Adriatic gibi projelerimizle, yatırımcılarımıza hem tatil hem de yatırım amaçlı mükemmel fırsatlar sunuyoruz.",
+      "Coskun Dijital",
+      "N AND D CONSTRUCTION"
+    ],
+    "images": [
+      {
+        "src": "wp-content/uploads/2025/11/nd-2-1280x321.png",
+        "alt": "",
+        "title": ""
+      },
+      {
+        "src": "wp-content/uploads/2025/03/NANDD-YENI-LOFO-scaled-179x45.png",
+        "alt": "N AND D",
+        "title": ""
+      },
+      {
+        "src": "wp-content/uploads/2025/11/IMG_9747-e1764288146355.jpeg",
+        "alt": "",
+        "title": ""
+      }
+    ],
+    "forms": []
+  },
+  "menu": [
+    {
+      "text": "Anasayfa",
+      "href": "../index.html"
+    },
+    {
+      "text": "Kurumsal",
+      "href": "index.html"
+    },
+    {
+      "text": "Projeler",
+      "href": "#"
+    },
+    {
+      "text": "Seafield Residences",
+      "href": "../seafield-residences/index.html"
+    },
+    {
+      "text": "Asis Adriatic",
+      "href": "../asis-adriatic/index.html"
+    },
+    {
+      "text": "İletişim",
+      "href": "../iletisim/index.html"
+    },
+    {
+      "text": "Anasayfa",
+      "href": "../index.html"
+    },
+    {
+      "text": "Kurumsal",
+      "href": "index.html"
+    },
+    {
+      "text": "Projeler",
+      "href": "#"
+    },
+    {
+      "text": "Seafield Residences",
+      "href": "../seafield-residences/index.html"
+    },
+    {
+      "text": "Asis Adriatic",
+      "href": "../asis-adriatic/index.html"
+    },
+    {
+      "text": "İletişim",
+      "href": "../iletisim/index.html"
+    }
+  ],
+  "metadata": {
+    "language": "tr",
+    "path": "nanddconstruction.com/kurumsal/index.html"
+  }
+}

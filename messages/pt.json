@@ -1,66 +1,11 @@
 {
   "Nav": {
     "home": "Início",
-    "services": "Serviços",
-    "process": "Processo",
-    "about": "Sobre",
     "contact": "Contato",
     "bookConsultation": "Reservar consulta"
   },
   "Cta": {
-    "bookConsultation": "Reservar consulta",
-    "exploreServices": "Explorar serviços"
-  },
-  "Home": {
-    "title": "Nova Vida Pronta — Montenegro",
-    "subtitle": "Descubra a vida dos seus sonhos em Montenegro. Nossa equipe profissional fornece soluções prontas.",
-    "valueProps": {
-      "property": {
-        "title": "Busca de propriedades",
-        "desc": "Serviço completo de pesquisa e avaliação para encontrar a propriedade perfeita para você."
-      },
-      "legal": {
-        "title": "Legal e residência",
-        "desc": "Suporte profissional para permisos de residência, cidadania e todos os processos legais."
-      },
-      "turnkey": {
-        "title": "Mudança pronta",
-        "desc": "Gerenciamos todo o processo para você, você apenas desfruta da sua nova vida."
-      }
-    },
-    "howItWorks": {
-      "title": "Como funciona",
-      "step1": {
-        "title": "Consulta inicial",
-        "desc": "Ouvimos suas necessidades e preparamos um plano personalizado."
-      },
-      "step2": {
-        "title": "Gestão do processo",
-        "desc": "Gerenciamos todos os passos para você e fornecemos atualizações regulares."
-      },
-      "step3": {
-        "title": "Entrega pronta",
-        "desc": "Você está pronto para começar sua nova vida em Montenegro!"
-      }
-    }
-  },
-  "Pages": {
-    "services": {
-      "title": "Nossos serviços",
-      "subtitle": "Soluções completas para a vida dos seus sonhos em Montenegro"
-    },
-    "process": {
-      "title": "Nosso processo",
-      "subtitle": "Uma abordagem personalizada, transparente e profissional"
-    },
-    "about": {
-      "title": "Sobre nós",
-      "subtitle": "Como N-AND-D Construction, ajudamos você a construir uma nova vida em Montenegro"
-    },
-    "contact": {
-      "title": "Contato",
-      "subtitle": "Entre em contato conosco para suas perguntas"
-    }
+    "bookConsultation": "Reservar consulta"
   },
   "Footer": {
     "description": "Descubra a vida dos seus sonhos em Montenegro. Nova vida pronta.",

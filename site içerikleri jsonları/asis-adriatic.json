@@ -1,0 +1,83 @@
+{
+  "slug": "asis-adriatic",
+  "title": "Asis Adriatic – N AND D",
+  "content": {
+    "headings": [
+      {
+        "level": "h2",
+        "text": "GALERİ"
+      }
+    ],
+    "paragraphs": [
+      "Coskun Dijital",
+      "N AND D CONSTRUCTION"
+    ],
+    "images": [
+      {
+        "src": "wp-content/uploads/2025/11/nd-2-1280x321.png",
+        "alt": "",
+        "title": ""
+      },
+      {
+        "src": "wp-content/uploads/2025/03/NANDD-YENI-LOFO-scaled-179x45.png",
+        "alt": "N AND D",
+        "title": ""
+      }
+    ],
+    "forms": []
+  },
+  "menu": [
+    {
+      "text": "Anasayfa",
+      "href": "../index.html"
+    },
+    {
+      "text": "Kurumsal",
+      "href": "../kurumsal/index.html"
+    },
+    {
+      "text": "Projeler",
+      "href": "#"
+    },
+    {
+      "text": "Seafield Residences",
+      "href": "../seafield-residences/index.html"
+    },
+    {
+      "text": "Asis Adriatic",
+      "href": "index.html"
+    },
+    {
+      "text": "İletişim",
+      "href": "../iletisim/index.html"
+    },
+    {
+      "text": "Anasayfa",
+      "href": "../index.html"
+    },
+    {
+      "text": "Kurumsal",
+      "href": "../kurumsal/index.html"
+    },
+    {
+      "text": "Projeler",
+      "href": "#"
+    },
+    {
+      "text": "Seafield Residences",
+      "href": "../seafield-residences/index.html"
+    },
+    {
+      "text": "Asis Adriatic",
+      "href": "index.html"
+    },
+    {
+      "text": "İletişim",
+      "href": "../iletisim/index.html"
+    }
+  ],
+  "metadata": {
+    "language": "tr",
+    "path": "nanddconstruction.com/asis-adriatic/index.html"
+  }
+}

@@ -1,93 +1,90 @@
-import { getTranslations } from 'next-intl/server';
-import { Button } from '@/components/ui/button';
+import { getContent, toAbsoluteImageUrl } from '@/content/nandd';
+import { ContactForm } from '@/components/contact-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Link } from '@/i18n/navigation';
+import Image from 'next/image';
 
 export default async function HomePage() {
-  const t = await getTranslations('Home');
-  const tCta = await getTranslations('Cta');
+  const content = getContent('tr').home;
+  const heroHeading = content.content.headings[0]?.text || '';
+  // "HAYALLERİNİZBurada!" -> "HAYALLERİNİZ Burada!" (whitespace düzeltmesi)
+  const formattedHeroHeading = heroHeading.replace(/([A-Z])([A-Z])/g, '$1 $2');
+  const subtitle = content.content.paragraphs[0] || '';
+  const nedenMontenegroHeading = content.content.headings.find((h) => h.text === 'Neden Montenegro?');
+  const nedenMontenegroParagraphs = content.content.paragraphs.slice(1, 3); // İlk 2 paragraf "Neden Montenegro?" için
 
   return (
     <div className="space-y-16">
       {/* Hero Section */}
       <section className="text-center space-y-6">
         <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
-          {t('title')}
+          {formattedHeroHeading}
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          {t('subtitle')}
+          {subtitle}
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild size="lg">
-            <Link href="/contact">{tCta('bookConsultation')}</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="/services">{tCta('exploreServices')}</Link>
-          </Button>
-        </div>
       </section>
 
-      {/* Value Props */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('valueProps.property.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription>{t('valueProps.property.desc')}</CardDescription>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('valueProps.legal.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription>{t('valueProps.legal.desc')}</CardDescription>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('valueProps.turnkey.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription>{t('valueProps.turnkey.desc')}</CardDescription>
-          </CardContent>
-        </Card>
-      </section>
+      {/* Neden Montenegro? */}
+      {nedenMontenegroHeading && (
+        <section className="space-y-6">
+          <h2 className="font-display text-3xl font-bold text-center">
+            {nedenMontenegroHeading.text}
+          </h2>
+          <div className="space-y-4 max-w-3xl mx-auto">
+            {nedenMontenegroParagraphs.map((para, idx) => (
+              <p key={idx} className="text-muted-foreground">
+                {para}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* How It Works */}
+      {/* Projeler Highlight */}
       <section className="space-y-8">
-        <h2 className="font-display text-3xl font-bold text-center">
-          {t('howItWorks.title')}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-4 text-center">
-            <Badge variant="default" className="text-lg px-4 py-2">
-              1
-            </Badge>
-            <h3 className="font-semibold text-lg">{t('howItWorks.step1.title')}</h3>
-            <p className="text-muted-foreground">{t('howItWorks.step1.desc')}</p>
-          </div>
-          
-          <div className="space-y-4 text-center">
-            <Badge variant="default" className="text-lg px-4 py-2">
-              2
-            </Badge>
-            <h3 className="font-semibold text-lg">{t('howItWorks.step2.title')}</h3>
-            <p className="text-muted-foreground">{t('howItWorks.step2.desc')}</p>
-          </div>
-          
-          <div className="space-y-4 text-center">
-            <Badge variant="default" className="text-lg px-4 py-2">
-              3
-            </Badge>
-            <h3 className="font-semibold text-lg">{t('howItWorks.step3.title')}</h3>
-            <p className="text-muted-foreground">{t('howItWorks.step3.desc')}</p>
-          </div>
+        <h2 className="font-display text-3xl font-bold text-center">Projelerimiz</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Seafield Residences</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Montenegro'nun Bar şehrinde, muhteşem Adriyatik denizi manzarasıyla öne çıkan prestijli bir konut projesi.
+              </CardDescription>
+              <Link href="/projeler/seafield-residences" className="mt-4 inline-block">
+                <span className="text-primary hover:underline">Detayları Gör →</span>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Asis Adriatic</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Modern tasarımı ve denize yakınlığı ile ideal bir yaşam alanı.
+              </CardDescription>
+              <Link href="/projeler/asis-adriatic" className="mt-4 inline-block">
+                <span className="text-primary hover:underline">Detayları Gör →</span>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
+      </section>
+
+      {/* Contact CTA Section */}
+      <section className="space-y-6">
+        <h3 className="font-display text-2xl font-bold text-center">
+          {content.content.headings.find((h) => h.text.includes('iletişime'))?.text || 'İletişim'}
+        </h3>
+        {content.content.forms[0] && (
+          <div className="max-w-2xl mx-auto">
+            <ContactForm fields={content.content.forms[0].fields} />
+          </div>
+        )}
       </section>
     </div>
   );

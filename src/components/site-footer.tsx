@@ -20,16 +20,16 @@ export async function SiteFooter() {
           <div className="space-y-4">
             <h4 className="text-sm font-semibold">{tFooter('quickLinks')}</h4>
             <nav className="flex flex-col space-y-2">
-              <Link href="/services" className="text-sm text-muted-foreground hover:text-primary">
-                {t('services')}
+              <Link href="/" className="text-sm text-muted-foreground hover:text-primary">
+                {t('home')}
               </Link>
-              <Link href="/process" className="text-sm text-muted-foreground hover:text-primary">
-                {t('process')}
+              <Link href="/kurumsal" className="text-sm text-muted-foreground hover:text-primary">
+                Kurumsal
               </Link>
-              <Link href="/about" className="text-sm text-muted-foreground hover:text-primary">
-                {t('about')}
+              <Link href="/projeler" className="text-sm text-muted-foreground hover:text-primary">
+                Projeler
               </Link>
-              <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary">
+              <Link href="/iletisim" className="text-sm text-muted-foreground hover:text-primary">
                 {t('contact')}
               </Link>
             </nav>
@@ -43,4 +43,3 @@ export async function SiteFooter() {
     </footer>
   );
 }
-

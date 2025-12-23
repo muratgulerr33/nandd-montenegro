@@ -1,66 +1,11 @@
 {
   "Nav": {
     "home": "Home",
-    "services": "Services",
-    "process": "Process",
-    "about": "About",
     "contact": "Contact",
     "bookConsultation": "Book Consultation"
   },
   "Cta": {
-    "bookConsultation": "Book Consultation",
-    "exploreServices": "Explore Services"
-  },
-  "Home": {
-    "title": "Turnkey New Life — Montenegro",
-    "subtitle": "Discover your dream life in Montenegro. Our professional team provides turnkey solutions for you.",
-    "valueProps": {
-      "property": {
-        "title": "Property Sourcing",
-        "desc": "Comprehensive research and evaluation service to find the perfect property for you."
-      },
-      "legal": {
-        "title": "Legal & Residency",
-        "desc": "Professional support for residency permits, citizenship, and all legal processes."
-      },
-      "turnkey": {
-        "title": "Turnkey Relocation",
-        "desc": "We manage the entire process for you, you just enjoy your new life."
-      }
-    },
-    "howItWorks": {
-      "title": "How It Works",
-      "step1": {
-        "title": "Initial Consultation",
-        "desc": "We listen to your needs and prepare a customized plan for you."
-      },
-      "step2": {
-        "title": "Process Management",
-        "desc": "We manage all steps for you and provide regular updates."
-      },
-      "step3": {
-        "title": "Turnkey Delivery",
-        "desc": "You're ready to start your new life in Montenegro!"
-      }
-    }
-  },
-  "Pages": {
-    "services": {
-      "title": "Our Services",
-      "subtitle": "Comprehensive solutions for your dream life in Montenegro"
-    },
-    "process": {
-      "title": "Our Process",
-      "subtitle": "A customized, transparent and professional approach"
-    },
-    "about": {
-      "title": "About Us",
-      "subtitle": "As N-AND-D Construction, we help you build a new life in Montenegro"
-    },
-    "contact": {
-      "title": "Contact",
-      "subtitle": "Get in touch with us for your questions"
-    }
+    "bookConsultation": "Book Consultation"
   },
   "Footer": {
     "description": "Discover your dream life in Montenegro. Turnkey new life.",

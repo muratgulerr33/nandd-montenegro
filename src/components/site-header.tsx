@@ -14,23 +14,23 @@ export async function SiteHeader() {
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
-          <Link href="/services" className="text-sm font-medium transition-colors hover:text-primary">
-            {t('services')}
+          <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
+            {t('home')}
           </Link>
-          <Link href="/process" className="text-sm font-medium transition-colors hover:text-primary">
-            {t('process')}
+          <Link href="/kurumsal" className="text-sm font-medium transition-colors hover:text-primary">
+            Kurumsal
           </Link>
-          <Link href="/about" className="text-sm font-medium transition-colors hover:text-primary">
-            {t('about')}
+          <Link href="/projeler" className="text-sm font-medium transition-colors hover:text-primary">
+            Projeler
           </Link>
-          <Link href="/contact" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/iletisim" className="text-sm font-medium transition-colors hover:text-primary">
             {t('contact')}
           </Link>
         </nav>
 
         <div className="flex items-center gap-4">
           <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link href="/contact">{t('bookConsultation')}</Link>
+            <Link href="/iletisim">{t('bookConsultation')}</Link>
           </Button>
           <LocaleSwitcher />
         </div>
@@ -38,4 +38,3 @@ export async function SiteHeader() {
     </header>
   );
 }
-
