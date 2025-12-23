@@ -4,7 +4,21 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { hasLocale } from 'next-intl';
+import { Tenor_Sans, Manrope } from 'next/font/google';
 import '../globals.css';
+
+const tenorSans = Tenor_Sans({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-tenor-sans',
+  display: 'swap',
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "NANDD Montenegro",
@@ -33,7 +47,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className="antialiased">
+      <body className={`${manrope.variable} ${tenorSans.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
