@@ -4,20 +4,19 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { hasLocale } from 'next-intl';
-import { Tenor_Sans, Inter } from 'next/font/google';
+import { Geist, Manrope } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import '../globals.css';
 
-const tenorSans = Tenor_Sans({
-  weight: '400',
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-display',
+  variable: '--font-geist',
   display: 'swap',
 });
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ['latin'],
-  variable: '--font-body',
+  variable: '--font-manrope',
   display: 'swap',
 });
 
@@ -47,7 +46,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-      <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${tenorSans.variable} ${inter.variable}`}>
+      <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${geist.variable} ${manrope.variable}`}>
       <body className="antialiased bg-background text-foreground font-sans" suppressHydrationWarning>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>

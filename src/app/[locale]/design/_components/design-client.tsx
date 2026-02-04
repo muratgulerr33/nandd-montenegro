@@ -174,7 +174,7 @@ export function DesignClient() {
           </h2>
         </div>
 
-        <div className="space-y-4 font-geist">
+        <div className="space-y-4 font-sans">
           <h3 className="text-lg font-semibold text-foreground">
             Geist – Başlıklar (inşaat / yatırım)
           </h3>
@@ -207,7 +207,7 @@ export function DesignClient() {
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-geist text-lg font-semibold text-foreground">
+          <h3 className="font-sans text-lg font-semibold text-foreground">
             Manrope – Sayılar (tabular-nums)
           </h3>
           <div className="font-numbers space-y-2 text-xl">
