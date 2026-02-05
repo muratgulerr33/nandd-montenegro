@@ -13,13 +13,13 @@ export default async function HomePage() {
   const asis = getContent('tr').asis;
   
   const heroHeading = content.content.headings[0]?.text || '';
-  // "HAYALLERİNİZBurada!" -> "HAYALLERİNİZ Burada!" (whitespace düzeltmesi)
-  const formattedHeroHeading = heroHeading.replace(/([A-Z])([A-Z])/g, '$1 $2');
+  // JSON'da zaten doğru boşluk var, regex'e gerek yok
+  const formattedHeroHeading = heroHeading;
   
   // Punctuation spacing düzeltmesi
   const normalizeText = (text: string) => {
     // Nokta sonrası boşluk ekle
-    let normalized = text.replace(/\.([A-ZÇĞİÖŞÜ])/g, '. $1');
+    const normalized = text.replace(/\.([A-ZÇĞİÖŞÜ])/g, '. $1');
     return normalized;
   };
   
@@ -42,10 +42,10 @@ export default async function HomePage() {
     <div className="bg-background text-foreground">
       {/* Hero Section */}
       <section className="text-center space-y-6 py-12 md:py-16">
-        <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight leading-[1.05]">
+        <h1 className="font-sans text-4xl md:text-6xl font-semibold tracking-tight leading-[1.02] [text-wrap:balance]">
           {formattedHeroHeading}
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
           {subtitle}
         </p>
       </section>
@@ -55,7 +55,7 @@ export default async function HomePage() {
       {/* Neden Montenegro? */}
       {nedenMontenegroHeading && (
         <section className="space-y-6 py-12 md:py-16">
-          <h2 className="font-display text-3xl font-bold text-center">
+          <h2 className="font-sans text-3xl font-bold text-center">
             {nedenMontenegroHeading.text}
           </h2>
           <div className="space-y-4 max-w-3xl mx-auto">
@@ -72,7 +72,7 @@ export default async function HomePage() {
 
       {/* Projeler Highlight */}
       <section className="space-y-8 py-12 md:py-16">
-        <h2 className="font-display text-3xl font-bold text-center">Projelerimiz</h2>
+        <h2 className="font-sans text-3xl font-bold text-center">Projelerimiz</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="border-border/60">
             {seafieldImage && (
@@ -93,7 +93,7 @@ export default async function HomePage() {
             </CardHeader>
             <CardContent>
               <CardDescription className="text-sm text-muted-foreground">
-                Montenegro'nun Bar şehrinde, muhteşem Adriyatik denizi manzarasıyla öne çıkan prestijli bir konut projesi.
+                Montenegro&apos;nun Bar şehrinde, muhteşem Adriyatik denizi manzarasıyla öne çıkan prestijli bir konut projesi.
               </CardDescription>
               <Button asChild variant="link" className="px-0 mt-4">
                 <Link href="/projeler/seafield-residences">Detayları Gör →</Link>
@@ -135,7 +135,7 @@ export default async function HomePage() {
       {/* Contact CTA Section */}
       <section className="space-y-6 py-12 md:py-16">
         <div className="max-w-3xl mx-auto space-y-4">
-          <h3 className="font-display text-2xl font-bold text-center">
+          <h3 className="font-sans text-2xl font-bold text-center">
             {formattedContactHeading}
           </h3>
           <Separator className="max-w-md mx-auto" />
