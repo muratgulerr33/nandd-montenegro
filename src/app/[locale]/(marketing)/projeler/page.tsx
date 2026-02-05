@@ -20,11 +20,11 @@ export default async function ProjelerPage() {
   return (
     <div className="bg-background text-foreground space-y-12">
       <div className="text-center space-y-4">
-        <h1 className="font-display text-4xl font-bold tracking-tight">
+        <h1 className="t-h1">
           Projelerimiz
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Montenegro'da hayalinizdeki yaşamı keşfedin.
+        <p className="t-lead text-muted-foreground max-w-2xl mx-auto">
+          Montenegro&apos;da hayalinizdeki yaşamı keşfedin.
         </p>
       </div>
 
@@ -45,11 +45,11 @@ export default async function ProjelerPage() {
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="secondary">Residence</Badge>
             </div>
-            <CardTitle className="font-medium">Seafield Residences</CardTitle>
+            <CardTitle className="t-h4">Seafield Residences</CardTitle>
           </CardHeader>
           <CardContent>
-            <CardDescription className="text-sm text-muted-foreground">
-              Montenegro'nun Bar şehrinde, muhteşem Adriyatik denizi manzarasıyla öne çıkan prestijli bir konut projesi.
+            <CardDescription className="t-muted">
+              Montenegro&apos;nun Bar şehrinde, muhteşem Adriyatik denizi manzarasıyla öne çıkan prestijli bir konut projesi.
             </CardDescription>
             <Button asChild variant="link" className="px-0 mt-4">
               <Link href="/projeler/seafield-residences">Detayları Gör →</Link>
@@ -73,10 +73,10 @@ export default async function ProjelerPage() {
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="secondary">Investment</Badge>
             </div>
-            <CardTitle className="font-medium">Asis Adriatic</CardTitle>
+            <CardTitle className="t-h4">Asis Adriatic</CardTitle>
           </CardHeader>
           <CardContent>
-            <CardDescription className="text-sm text-muted-foreground">
+            <CardDescription className="t-muted">
               Modern tasarımı ve denize yakınlığı ile ideal bir yaşam alanı.
             </CardDescription>
             <Button asChild variant="link" className="px-0 mt-4">

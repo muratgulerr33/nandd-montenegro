@@ -11,7 +11,7 @@ export default async function IletisimPage() {
     <div className="space-y-12">
       {mainHeading && (
         <div className="text-center space-y-4">
-          <h1 className="font-display text-4xl font-bold tracking-tight">
+          <h1 className="t-h1">
             {mainHeading.text}
           </h1>
           {subHeading && (

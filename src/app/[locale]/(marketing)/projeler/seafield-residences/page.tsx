@@ -17,18 +17,18 @@ export default async function SeafieldPage() {
 
   return (
     <div className="space-y-12">
-      <h1 className="font-display text-4xl font-bold tracking-tight">
+      <h1 className="t-h1">
         Seafield Residences
       </h1>
 
       {/* About Section */}
       {aboutHeading && (
         <section className="space-y-4">
-          <h2 className="font-display text-3xl font-bold">
+          <h2 className="t-h2">
             {aboutHeading.text}
           </h2>
           {content.content.paragraphs.slice(0, 2).map((para, idx) => (
-            <p key={idx} className="text-muted-foreground">
+            <p key={idx} className="t-body text-muted-foreground">
               {para}
             </p>
           ))}
@@ -38,11 +38,11 @@ export default async function SeafieldPage() {
       {/* Neden Seafeild Residence? */}
       {nedenHeading && (
         <section className="space-y-4">
-          <h2 className="font-display text-3xl font-bold">
+          <h2 className="t-h2">
             {nedenHeading.text}
           </h2>
           {nedenText && (
-            <p className="text-muted-foreground max-w-3xl">
+            <p className="t-body text-muted-foreground max-w-3xl">
               {nedenText.text}
             </p>
           )}
@@ -52,7 +52,7 @@ export default async function SeafieldPage() {
       {/* Galeri */}
       {galeriHeading && galeriImages.length > 0 && (
         <section className="space-y-6">
-          <h2 className="font-display text-3xl font-bold">
+          <h2 className="t-h2">
             {galeriHeading.text}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -17,14 +17,14 @@ export default async function AsisPage() {
 
   return (
     <div className="space-y-12">
-      <h1 className="font-display text-4xl font-bold tracking-tight">
+      <h1 className="t-h1">
         {title}
       </h1>
 
       {/* Galeri */}
       {galeriHeading && galeriImages.length > 0 && (
         <section className="space-y-6">
-          <h2 className="font-display text-3xl font-bold">
+          <h2 className="t-h2">
             {galeriHeading.text}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -50,10 +50,10 @@ export default async function AsisPage() {
             .map((heading, idx) => (
               <div key={idx}>
                 {heading.level === 'h2' && (
-                  <h2 className="font-display text-3xl font-bold">{heading.text}</h2>
+                  <h2 className="t-h2">{heading.text}</h2>
                 )}
                 {heading.level === 'h3' && (
-                  <h3 className="font-display text-2xl font-semibold">{heading.text}</h3>
+                  <h3 className="t-h3">{heading.text}</h3>
                 )}
               </div>
             ))}

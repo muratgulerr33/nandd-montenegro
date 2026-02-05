@@ -29,7 +29,7 @@ export function ContactForm({ fields }: ContactFormProps) {
   return (
     <Card className="bg-card shadow-sm">
       <CardHeader>
-        <CardTitle className="font-display">İletişim Formu</CardTitle>
+        <CardTitle>İletişim Formu</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">

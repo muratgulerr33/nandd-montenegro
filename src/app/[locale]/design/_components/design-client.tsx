@@ -58,7 +58,7 @@ function getTokenValue(name: string): string {
 
 export function DesignClient() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [tokens, setTokens] = useState<{ name: string; value: string }[]>([]);
 
   const updateTokens = useCallback(() => {
@@ -71,13 +71,13 @@ export function DesignClient() {
   }, []);
 
   useEffect(() => {
-    setMounted(true);
+    queueMicrotask(() => setMounted(true));
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
-    updateTokens();
-    const observer = new MutationObserver(updateTokens);
+    queueMicrotask(() => updateTokens());
+    const observer = new MutationObserver(() => queueMicrotask(updateTokens));
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
@@ -100,15 +100,15 @@ export function DesignClient() {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
           <Badge variant="secondary">N-AND-D Design System</Badge>
-          <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground">
+          <h1 className="t-h1 text-foreground">
             Design Rules
           </h1>
-          <p className="max-w-2xl text-muted-foreground">
+          <p className="t-lead max-w-2xl text-muted-foreground">
             Premium + güven veren inşaat/yatırım UI standardı.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">
+          <span className="t-muted">
             {resolvedTheme === "dark" ? "Koyu" : "Açık"}
           </span>
           <Button
@@ -132,7 +132,7 @@ export function DesignClient() {
       <section className="space-y-6">
         <div className="flex items-center gap-2">
           <Palette className="size-6 text-muted-foreground" />
-          <h2 className="font-display text-2xl font-semibold text-foreground">
+          <h2 className="t-h2 text-foreground">
             Foundations / Renk Paleti
           </h2>
         </div>
@@ -169,30 +169,29 @@ export function DesignClient() {
       <section className="space-y-8">
         <div className="flex items-center gap-2">
           <Type className="size-6 text-muted-foreground" />
-          <h2 className="font-display text-2xl font-semibold text-foreground">
+          <h2 className="t-h2 text-foreground">
             Tipografi Ölçeği (Geist + Manrope)
           </h2>
         </div>
 
-        <div className="space-y-4 font-sans">
-          <h3 className="text-lg font-semibold text-foreground">
+        <div className="space-y-4">
+          <h3 className="t-h3 text-foreground">
             Geist – Başlıklar (inşaat / yatırım)
           </h3>
-          <h1 className="text-4xl font-semibold tracking-tight">H1 Başlık</h1>
-          <h2 className="text-3xl font-semibold">H2 Başlık</h2>
-          <h3 className="text-2xl font-semibold">H3 Başlık</h3>
-          <h4 className="text-xl font-semibold">H4 Başlık</h4>
-          <h5 className="text-lg font-semibold">H5 Başlık</h5>
-          <h6 className="text-base font-semibold">H6 Başlık</h6>
-          <p className="max-w-xl leading-relaxed text-foreground">
+          <h1 className="t-display">Display</h1>
+          <h1 className="t-h1">H1 Başlık</h1>
+          <h2 className="t-h2">H2 Başlık</h2>
+          <h3 className="t-h3">H3 Başlık</h3>
+          <h4 className="t-h4">H4 Başlık</h4>
+          <p className="t-body max-w-xl text-foreground">
             Montenegro&apos;da yatırım ve inşaat süreçleri güvenle yürütülür.
             Anahtar teslim projeler, yasal uyum ve şeffaf süreçlerle desteklenir.
           </p>
-          <p className="max-w-xl leading-relaxed text-muted-foreground">
+          <p className="t-body max-w-xl text-muted-foreground">
             İkinci paragraf – muted rengi ile. Yatırımcılar için net bilgi ve
             iletişim önceliklidir.
           </p>
-          <p className="text-sm text-muted-foreground">Küçük / muted metin</p>
+          <p className="t-muted">Küçük / muted metin</p>
           <a href="#" className="text-primary underline-offset-4 hover:underline">
             Link örneği
           </a>
@@ -207,7 +206,7 @@ export function DesignClient() {
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-sans text-lg font-semibold text-foreground">
+          <h3 className="t-h3 text-foreground">
             Manrope – Sayılar (tabular-nums)
           </h3>
           <div className="font-numbers space-y-2 text-xl">
@@ -235,13 +234,13 @@ export function DesignClient() {
 
         <Card className="bg-muted/50">
           <CardHeader>
-            <CardTitle className="text-base">Premium tipografi kuralları</CardTitle>
+            <CardTitle className="t-h4">Premium tipografi kuralları</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-1 text-sm text-muted-foreground">
-            <p>• Başlıklar: 600/650 ağırlık bandı</p>
-            <p>• Gövde: 400/450</p>
-            <p>• Etiketler: 500</p>
-            <p>• H1 tracking daha sıkı, gövde normal, line-height gövde 1.6</p>
+          <CardContent className="space-y-1">
+            <p className="t-muted">• Başlıklar: 600/650 ağırlık bandı</p>
+            <p className="t-muted">• Gövde: 400/450</p>
+            <p className="t-muted">• Etiketler: 500</p>
+            <p className="t-muted">• H1 tracking daha sıkı, gövde normal, line-height gövde 1.6</p>
           </CardContent>
         </Card>
       </section>
@@ -252,7 +251,7 @@ export function DesignClient() {
       <section className="space-y-8">
         <div className="flex items-center gap-2">
           <MousePointerClick className="size-6 text-muted-foreground" />
-          <h2 className="font-display text-2xl font-semibold text-foreground">
+          <h2 className="t-h2 text-foreground">
             Button Matrix (variant / size / state)
           </h2>
         </div>
@@ -305,11 +304,11 @@ export function DesignClient() {
       <section className="space-y-8">
         <div className="flex items-center gap-2">
           <FileText className="size-6 text-muted-foreground" />
-          <h2 className="font-display text-2xl font-semibold text-foreground">
+          <h2 className="t-h2 text-foreground">
             Form Elemanları
           </h2>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="t-muted">
           Focus ring&apos;i Tab ile test edin.
         </p>
         <div className="grid gap-6 sm:grid-cols-2">
@@ -360,33 +359,33 @@ export function DesignClient() {
       <section className="space-y-8">
         <div className="flex items-center gap-2">
           <Zap className="size-6 text-muted-foreground" />
-          <h2 className="font-display text-2xl font-semibold text-foreground">
+          <h2 className="t-h2 text-foreground">
             Etkileşim ve Erişilebilirlik
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
+              <CardTitle className="flex items-center gap-2 t-h4">
                 <CheckCircle2 className="size-4 text-primary" />
                 Touch target ≥ 44px
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Varsayılan buton yüksekliği 36px (sm: 32px). İkon buton 36px.
-              Input 36px. Mobilde 44px hedefi için lg/px kullanın.
+            <CardContent className="text-foreground">
+              <p className="t-muted">Varsayılan buton yüksekliği 36px (sm: 32px). İkon buton 36px.</p>
+              <p className="t-muted">Input 36px. Mobilde 44px hedefi için lg/px kullanın.</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
+              <CardTitle className="flex items-center gap-2 t-h4">
                 <AlertCircle className="size-4 text-primary" />
                 Focus-visible
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Tüm etkileşimli öğelerde focus-visible:ring-[3px] ile ring var.
-              Klavye ile Tab ile gezinerek kontrol edin.
+            <CardContent>
+              <p className="t-muted">Tüm etkileşimli öğelerde focus-visible:ring-[3px] ile ring var.</p>
+              <p className="t-muted">Klavye ile Tab ile gezinerek kontrol edin.</p>
             </CardContent>
           </Card>
         </div>
@@ -396,7 +395,7 @@ export function DesignClient() {
 
       {/* F) Components in Context */}
       <section className="space-y-8">
-        <h2 className="font-display text-2xl font-semibold text-foreground">
+        <h2 className="t-h2 text-foreground">
           Bileşenler Bağlamda (inşaat / yatırım)
         </h2>
 
@@ -407,8 +406,8 @@ export function DesignClient() {
               <Badge variant="secondary" className="w-fit">
                 Proje
               </Badge>
-              <CardTitle className="text-lg">Proje Kartı</CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <CardTitle className="t-h3">Proje Kartı</CardTitle>
+              <p className="t-muted">
                 Görsel placeholder, badge, başlık, kısa açıklama ve CTA.
               </p>
             </CardHeader>
@@ -419,12 +418,12 @@ export function DesignClient() {
 
           <Card className="overflow-hidden">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Fiyat / Teklif Kartı</CardTitle>
+              <CardTitle className="t-h3">Fiyat / Teklif Kartı</CardTitle>
               <p className="font-numbers text-2xl font-semibold">€250.000</p>
-              <p className="text-sm text-muted-foreground line-through">
+              <p className="t-muted line-through">
                 €285.000
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="t-muted">
                 Manrope fiyat + eski fiyat + CTA.
               </p>
             </CardHeader>
@@ -435,8 +434,8 @@ export function DesignClient() {
 
           <Card className="overflow-hidden">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Süreç / Zaman Çizelgesi</CardTitle>
-              <ol className="list-inside space-y-1 text-sm text-muted-foreground">
+              <CardTitle className="t-h3">Süreç / Zaman Çizelgesi</CardTitle>
+              <ol className="list-inside space-y-1 t-muted">
                 <li>1. Keşif</li>
                 <li>2. Sözleşme</li>
                 <li>3. Teslim</li>

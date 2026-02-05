@@ -17,10 +17,10 @@ export default async function KurumsalPage() {
       {/* Biz Kimiz? */}
       {bizKimizHeading && (
         <section className="space-y-6">
-          <h1 className="font-display text-4xl font-bold tracking-tight">
+          <h1 className="t-h1">
             {bizKimizHeading.text}
           </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl">
+          <p className="t-lead text-muted-foreground max-w-3xl">
             {bizKimizText}
           </p>
         </section>
@@ -29,10 +29,10 @@ export default async function KurumsalPage() {
       {/* Misyon */}
       {misyonHeading && (
         <section className="space-y-4">
-          <h2 className="font-display text-3xl font-bold">
+          <h2 className="t-h2">
             {misyonHeading.text}
           </h2>
-          <p className="text-muted-foreground max-w-3xl">
+          <p className="t-body text-muted-foreground max-w-3xl">
             {misyonText}
           </p>
         </section>
@@ -41,10 +41,10 @@ export default async function KurumsalPage() {
       {/* Vizyon */}
       {vizyonHeading && (
         <section className="space-y-4">
-          <h2 className="font-display text-3xl font-bold">
+          <h2 className="t-h2">
             {vizyonHeading.text}
           </h2>
-          <p className="text-muted-foreground max-w-3xl">
+          <p className="t-body text-muted-foreground max-w-3xl">
             {vizyonText}
           </p>
         </section>
