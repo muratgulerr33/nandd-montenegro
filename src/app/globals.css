@@ -3,6 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* scroll-behavior: smooth not set — avoids jank on mobile */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -46,6 +48,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-card-cta: var(--card-cta);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -94,6 +97,12 @@
   --sidebar-ring: oklch(0.708 0 0);
   --surface-1: oklch(0.99 0.003 88);
   --surface-2: oklch(0.995 0.002 88);
+  --card-cta: var(--primary);
+  /* Hero over dark image: text and cues (theme-independent light) */
+  --hero-text: oklch(0.985 0 0);
+  --hero-text-muted: oklch(0.985 0 0 / 0.7);
+  --hero-text-muted-75: oklch(0.985 0 0 / 0.75);
+  --hero-scroll-cue: oklch(0.985 0 0 / 0.2);
 }
 
 .dark {
@@ -134,7 +143,25 @@
   --sidebar-ring: oklch(0.556 0 0);
   --surface-1: oklch(0.27 0 0);
   --surface-2: oklch(0.293 0 0);
+  --card-cta: var(--foreground);
+  --hero-text: oklch(0.985 0 0);
+  --hero-text-muted: oklch(0.985 0 0 / 0.7);
+  --hero-text-muted-75: oklch(0.985 0 0 / 0.75);
+  --hero-scroll-cue: oklch(0.985 0 0 / 0.2);
 }
+
+/* Hero over dark image: token-based utilities (no hardcoded white/black in TSX) */
+.hero-vignette {
+  background: radial-gradient(
+    ellipse 75% 75% at 50% 50%,
+    transparent 0%,
+    color-mix(in oklch, var(--foreground) 14%, transparent) 100%
+  );
+}
+.hero-text { color: var(--hero-text); }
+.hero-text-muted { color: var(--hero-text-muted); }
+.hero-text-muted-75 { color: var(--hero-text-muted-75); }
+.hero-scroll-cue { background-color: var(--hero-scroll-cue); }
 
 @layer base {
   * {
@@ -261,5 +288,185 @@
 .font-numbers {
   font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
+}
+
+/* No-flash motion primitives — transform/opacity only; overlay bileşenlerine dokunulmaz */
+@layer utilities {
+  .gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+  .motion-safe-transforms {
+    transition: transform 150ms ease-out, opacity 150ms ease-out;
+  }
+  .motion-safe-colors {
+    transition: color 150ms ease-out, background-color 150ms ease-out, border-color 150ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gpu {
+      will-change: auto;
+    }
+    .motion-safe-transforms,
+    .motion-safe-colors {
+      transition: none;
+    }
+  }
+  /* Legacy aliases (same behavior) */
+  .gpu-motion {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  .trans-smooth {
+    transition: transform 200ms ease-out, opacity 200ms ease-out;
+  }
+  .trans-fast {
+    transition: transform 150ms ease-out, opacity 150ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gpu-motion {
+      will-change: auto;
+    }
+    .trans-smooth,
+    .trans-fast {
+      transition: none;
+    }
+  }
+}
+
+/* Tactile press effect — GPU-friendly, token-safe, no hardcoded colors */
+@layer utilities {
+  .tactile {
+    transition: transform 150ms ease-out;
+    will-change: transform;
+    transform: translateZ(0);
+    touch-action: manipulation;
+  }
+  .tactile:active {
+    transform: scale(0.98) translateZ(0);
+  }
+  .tactile-sm:active {
+    transform: scale(0.985) translateZ(0);
+  }
+  .tactile-lg:active {
+    transform: scale(0.975) translateZ(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tactile,
+    .tactile-sm,
+    .tactile-lg {
+      transition: none;
+      transform: none;
+    }
+    .tactile:active,
+    .tactile-sm:active,
+    .tactile-lg:active {
+      transform: none;
+    }
+  }
+}
+
+/* Page push transition (View Transition API). Header sabit; sadece .vt-page (main) kayar. Transform + opacity only (GPU-only). */
+.vt-page {
+  view-transition-name: page;
+}
+
+@supports (view-transition-name: root) {
+  /* Root (header vb.) animasyonsuz kalsın; sadece page (main) kayacak */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  ::view-transition-old(page) {
+    animation-duration: 345ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
+    animation-name: page-transition-old-forward;
+  }
+  ::view-transition-new(page) {
+    animation-duration: 345ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
+    animation-name: page-transition-new-forward;
+  }
+  html[data-page-transition="back"]::view-transition-old(page) {
+    animation-name: page-transition-old-back;
+  }
+  html[data-page-transition="back"]::view-transition-new(page) {
+    animation-name: page-transition-new-back;
+  }
+
+  /* 5px edge highlight — forward: sağ kenar, back: sol kenar. Pseudo üzerinde ::before parser hatası verdiği için gradient doğrudan background. */
+  ::view-transition-new(page) {
+    background-image: linear-gradient(
+      to left,
+      color-mix(in oklch, var(--ring) 35%, transparent) 0 5px,
+      transparent 24px
+    );
+    background-size: 24px 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+  }
+  html[data-page-transition="back"]::view-transition-new(page) {
+    background-image: linear-gradient(
+      to right,
+      color-mix(in oklch, var(--ring) 35%, transparent) 0 5px,
+      transparent 24px
+    );
+    background-position: 0 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(page),
+    ::view-transition-new(page) {
+      animation: none !important;
+    }
+    ::view-transition-new(page) {
+      background-image: none !important;
+    }
+  }
+}
+
+@keyframes page-transition-old-forward {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(-12%, 0, 0);
+    opacity: 0.985;
+  }
+}
+@keyframes page-transition-new-forward {
+  from {
+    transform: translate3d(12%, 0, 0);
+    opacity: 0.985;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+@keyframes page-transition-old-back {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(12%, 0, 0);
+    opacity: 0.985;
+  }
+}
+@keyframes page-transition-new-back {
+  from {
+    transform: translate3d(-12%, 0, 0);
+    opacity: 0.985;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
 }
 
