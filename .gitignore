@@ -20,8 +20,9 @@
 # production
 /build
 
-# misc
+# misc (macOS)
 .DS_Store
+**/.DS_Store
 *.pem
 *.backup
 

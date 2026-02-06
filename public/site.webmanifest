@@ -1,0 +1,16 @@
+{
+  "name": "NANDD Montenegro",
+  "short_name": "NANDD",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.webp",
+      "sizes": "1024x1024",
+      "type": "image/webp"
+    }
+  ]
+}

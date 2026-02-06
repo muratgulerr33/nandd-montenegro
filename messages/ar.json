@@ -10,6 +10,90 @@
   "Footer": {
     "description": "اكتشف حياة أحلامك في الجبل الأسود. حياة جديدة جاهزة.",
     "quickLinks": "روابط سريعة",
-    "rights": "جميع الحقوق محفوظة."
+    "rights": "جميع الحقوق محفوظة.",
+    "ctaTitle": "لنبني معاً حياة أحلامك",
+    "ctaSubtitle": "احصل على استشارة مجانية لمشروعك. يسعدنا تواصلك معنا.",
+    "ctaPrimary": "تواصل معنا",
+    "ctaSecondary": "واتساب",
+    "brandBlurb": "اكتشف حياة أحلامك في الجبل الأسود. حياة جديدة جاهزة.",
+    "trustChip1": "فريق ذو خبرة",
+    "trustChip2": "عملية شفافة",
+    "trustChip3": "مركزون على العميل",
+    "navCompany": "الشركة",
+    "navProjects": "المشاريع",
+    "navHome": "الرئيسية",
+    "navCorporate": "عن الشركة",
+    "navWhoWeAre": "من نحن",
+    "navConsultation": "استشارة",
+    "navProjectsLink": "المشاريع",
+    "navContact": "اتصل بنا",
+    "contactHeading": "اتصل بنا",
+    "contactLink": "صفحة الاتصال",
+    "contactPhone": "هاتف",
+    "contactWhatsApp": "واتساب",
+    "contactTelegram": "تيليجرام",
+    "workingHours": "ساعات العمل: الاثنين–الجمعة 09:00–18:00"
+  },
+  "header": {
+    "themeToggle": "تبديل السمة"
+  },
+  "mobileNav": {
+    "toggleMenu": "فتح/إغلاق القائمة",
+    "menuTitle": "القائمة",
+    "menuDescription": "القائمة للتنقل بين الصفحات",
+    "close": "إغلاق",
+    "login": "تسجيل الدخول",
+    "signUp": "التسجيل"
+  },
+  "locale": {
+    "title": "اختيار اللغة",
+    "description": "تغيير لغة الموقع",
+    "heading": "اختر اللغة",
+    "chooseLanguage": "اختر لغة",
+    "close": "إغلاق"
+  },
+  "stickySocial": {
+    "phone": "هاتف",
+    "whatsapp": "واتساب",
+    "instagram": "إنستغرام",
+    "telegram": "تيليجرام",
+    "youtube": "يوتيوب",
+    "chat": "دردشة"
+  },
+  "Kurumsal": {
+    "pageTitle": "Why us?",
+    "pageLead": "With our story since 2014 at N.and.D Construction, we build dozens of projects and thousands of lives.",
+    "headings": { "bizKimiz": "Who we are?", "misyonumuz": "Our mission", "vizyonumuz": "Our vision" },
+    "paragraphs": {
+      "bizKimiz": "N.and.D Construction Company is a real estate development company located in Dobro Vodo, Bar, Montenegro, offering sea-view residential projects. Our Seafeild Residence and Asis Adriatic projects offer investors properties that gain value throughout the long summer season. Montenegro is a region where the sea is accessible for 7-8 months and population and tourism increase significantly in summer, so our projects are in high demand.",
+      "misyon": "Our mission is to offer our investors sustainable, value-adding real estate opportunities in Montenegro with high long-term returns. We prioritise quality and trust in every project while keeping our investors' comfort and satisfaction at the highest level.",
+      "vizyon": "Our vision is to make the Montenegrin coast a hub for international investors by developing modern and innovative projects. With projects like Seafeild Residence and Asis Adriatic, we offer our investors excellent opportunities for both holiday and investment."
+    }
+  },
+  "Projeler": {
+    "heading": "Our projects",
+    "lead": "Discover premium living and investment value in Montenegro.",
+    "ariaLabel": "Project list",
+    "items": {
+      "0": { "tag": "Residence", "title": "Seafield Residences", "description": "A prestigious project in Bar, Montenegro, with Adriatic views; premium residential experience with architectural detail and comfort.", "cta": "Explore project", "imageAlt": "Seafield Residences" },
+      "1": { "tag": "Investment", "title": "Asis Adriatic", "description": "A premium investment project with modern design and coastal location, combining quality of life with long-term value potential.", "cta": "Explore project", "imageAlt": "Asis Adriatic" }
+    },
+    "seafield": {
+      "pageTitle": "Seafield Residences",
+      "aboutHeading": "About us",
+      "nedenHeading": "Why Seafeild Residence?",
+      "nedenText": "Seafeild Residence is a prestigious residential project in Bar, Montenegro, with stunning Adriatic sea views. With its modern design and proximity to the sea, it offers an ideal living space for both holidaymakers and long-term investors.",
+      "galeriHeading": "Gallery",
+      "paragraphs": { "0": "Your dream home, your investment!", "1": "We introduce you to Montenegro's most prestigious projects with modern architecture and comfort-focused living spaces." },
+      "imageAltFallback": "Seafield Residences"
+    },
+    "asis": { "pageTitle": "Asis Adriatic", "galeriHeading": "Gallery", "imageAltFallback": "Asis Adriatic" }
+  },
+  "Iletisim": {
+    "heading": "Contact",
+    "subHeading": "We are here to get in touch with you. Fill in the form and we will get back to you.",
+    "paragraph": "Perhaps you took the first step, but how about taking the second step together? We invite you to have us by your side as you make your dreams come true.",
+    "ariaLabel": "Contact content",
+    "form": { "title": "Contact form", "submit": "Send", "placeholderAd": "First name", "placeholderSoyad": "Last name", "placeholderNumara": "Phone number", "placeholderEmail": "Email", "placeholderMesaj": "Your message" }
   }
 }

@@ -10,26 +10,31 @@ type FormField = {
   name: string;
   placeholder: string;
   required: boolean;
+  asTextarea?: boolean;
 };
 
 type ContactFormProps = {
   fields: FormField[];
+  formTitle?: string;
+  submitLabel?: string;
 };
 
-export function ContactForm({ fields }: ContactFormProps) {
-  // Sadece görünür alanları filtrele (hidden alanları hariç tut)
+export function ContactForm({
+  fields,
+  formTitle = 'Contact form',
+  submitLabel = 'Send',
+}: ContactFormProps) {
   const visibleFields = fields.filter((field) => field.type !== 'hidden');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Şimdilik noop - UI only
     console.log('Form submitted (UI only)');
   };
 
   return (
-    <Card>
+    <Card className="border-border bg-card rounded-lg">
       <CardHeader>
-        <CardTitle>İletişim Formu</CardTitle>
+        <CardTitle className="t-h3 text-foreground">{formTitle}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -43,12 +48,13 @@ export function ContactForm({ fields }: ContactFormProps) {
                     placeholder={field.placeholder}
                     required={field.required}
                     className="w-full"
+                    aria-label={field.placeholder}
                   />
                 </div>
               );
             }
 
-            if (field.type === 'text' && field.placeholder.toLowerCase().includes('mesaj')) {
+            if (field.asTextarea) {
               return (
                 <div key={index}>
                   <Textarea
@@ -56,6 +62,7 @@ export function ContactForm({ fields }: ContactFormProps) {
                     placeholder={field.placeholder}
                     required={field.required}
                     className="w-full min-h-24"
+                    aria-label={field.placeholder}
                   />
                 </div>
               );
@@ -69,16 +76,16 @@ export function ContactForm({ fields }: ContactFormProps) {
                   placeholder={field.placeholder}
                   required={field.required}
                   className="w-full"
+                  aria-label={field.placeholder}
                 />
               </div>
             );
           })}
           <Button type="submit" className="w-full" variant="default">
-            Gönder
+            {submitLabel}
           </Button>
         </form>
       </CardContent>
     </Card>
   );
 }
-

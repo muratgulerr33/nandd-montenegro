@@ -9,9 +9,20 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = routing.defaultLocale;
   }
 
+  const localeMessages = (await import(`../../messages/${locale}.json`)).default as Record<string, unknown>;
+  let homeNamespace: Record<string, unknown>;
+  if (locale === routing.defaultLocale) {
+    homeNamespace = (await import('@/content/nandd/home.json')).default as Record<string, unknown>;
+  } else {
+    try {
+      homeNamespace = (await import(`@/content/nandd/home.${locale}.json`)).default as Record<string, unknown>;
+    } catch {
+      homeNamespace = (await import('@/content/nandd/home.json')).default as Record<string, unknown>;
+    }
+  }
   return {
     locale,
-    messages: (await import(`../../messages/${locale}.json`)).default
+    messages: { ...localeMessages, home: homeNamespace }
   };
 });
 

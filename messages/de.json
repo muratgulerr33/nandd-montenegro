@@ -10,6 +10,90 @@
   "Footer": {
     "description": "Entdecken Sie Ihr Traumleben in Montenegro. Schlüsselfertiges neues Leben.",
     "quickLinks": "Schnelllinks",
-    "rights": "Alle Rechte vorbehalten."
+    "rights": "Alle Rechte vorbehalten.",
+    "ctaTitle": "Lassen Sie uns gemeinsam Ihr Traumleben verwirklichen",
+    "ctaSubtitle": "Kostenlose Beratung für Ihr Projekt. Wir freuen uns auf Ihre Nachricht.",
+    "ctaPrimary": "Kontakt aufnehmen",
+    "ctaSecondary": "WhatsApp",
+    "brandBlurb": "Entdecken Sie Ihr Traumleben in Montenegro. Schlüsselfertiges neues Leben.",
+    "trustChip1": "Erfahrenes Team",
+    "trustChip2": "Transparenter Prozess",
+    "trustChip3": "Kundenorientiert",
+    "navCompany": "Unternehmen",
+    "navProjects": "Projekte",
+    "navHome": "Startseite",
+    "navCorporate": "Über uns",
+    "navWhoWeAre": "Wer wir sind",
+    "navConsultation": "Beratung",
+    "navProjectsLink": "Projekte",
+    "navContact": "Kontakt",
+    "contactHeading": "Kontakt",
+    "contactLink": "Kontaktseite",
+    "contactPhone": "Telefon",
+    "contactWhatsApp": "WhatsApp",
+    "contactTelegram": "Telegram",
+    "workingHours": "Öffnungszeiten: Mo–Fr 09:00–18:00"
+  },
+  "header": {
+    "themeToggle": "Design wechseln"
+  },
+  "mobileNav": {
+    "toggleMenu": "Menü umschalten",
+    "menuTitle": "Menü",
+    "menuDescription": "Menü zur Seitennavigation",
+    "close": "Schließen",
+    "login": "Anmelden",
+    "signUp": "Registrieren"
+  },
+  "locale": {
+    "title": "Sprachauswahl",
+    "description": "Sprache der Website ändern",
+    "heading": "Sprache wählen",
+    "chooseLanguage": "Sprache auswählen",
+    "close": "Schließen"
+  },
+  "stickySocial": {
+    "phone": "Telefon",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "chat": "Chat"
+  },
+  "Kurumsal": {
+    "pageTitle": "Warum wir?",
+    "pageLead": "Mit unserer Geschichte seit 2014 bei N.and.D Construction bauen wir Dutzende Projekte und Tausende Leben.",
+    "headings": { "bizKimiz": "Wer sind wir?", "misyonumuz": "Unsere Mission", "vizyonumuz": "Unsere Vision" },
+    "paragraphs": {
+      "bizKimiz": "N.and.D Construction Company ist ein Immobilienentwicklungsunternehmen in Dobro Vodo, Bar, Montenegro, mit Wohnprojekten mit Meerblick. Unsere Projekte Seafeild Residence und Asis Adriatic bieten Investoren Immobilien mit Wertsteigerung in der langen Sommersaison. Montenegro ist eine Region, in der das Meer 7–8 Monate zugänglich ist und Bevölkerung und Tourismus im Sommer stark zunehmen; unsere Projekte sind daher stark nachgefragt.",
+      "misyon": "Unsere Mission ist es, unseren Investoren nachhaltige, wertsteigernde Immobilienchancen in Montenegro mit hohen langfristigen Erträgen zu bieten. Wir priorisieren Qualität und Vertrauen in jedem Projekt bei höchstem Komfort und Zufriedenheit unserer Investoren.",
+      "vizyon": "Unsere Vision ist es, die montenegrinische Küste durch moderne und innovative Projekte zu einem Anziehungspunkt für internationale Investoren zu machen. Mit Projekten wie Seafeild Residence und Asis Adriatic bieten wir unseren Investoren ausgezeichnete Möglichkeiten für Urlaub und Investition."
+    }
+  },
+  "Projeler": {
+    "heading": "Unsere Projekte",
+    "lead": "Entdecken Sie erstklassiges Wohnen und Investmentwert in Montenegro.",
+    "ariaLabel": "Projektliste",
+    "items": {
+      "0": { "tag": "Residenz", "title": "Seafield Residences", "description": "Ein prestigeträchtiges Projekt in Bar, Montenegro, mit Adriatikblick; erstklassiges Wohnerlebnis mit architektonischen Details und Komfort.", "cta": "Projekt entdecken", "imageAlt": "Seafield Residences" },
+      "1": { "tag": "Investition", "title": "Asis Adriatic", "description": "Ein Premium-Investmentprojekt mit modernem Design und Küstenlage, das Lebensqualität mit langfristigem Wertpotenzial verbindet.", "cta": "Projekt entdecken", "imageAlt": "Asis Adriatic" }
+    },
+    "seafield": {
+      "pageTitle": "Seafield Residences",
+      "aboutHeading": "Über uns",
+      "nedenHeading": "Warum Seafeild Residence?",
+      "nedenText": "Seafeild Residence ist ein prestigeträchtiges Wohnprojekt in Bar, Montenegro, mit atemberaubendem Adriatik-Meerblick. Mit modernem Design und Meernähe bietet es idealen Wohnraum für Urlauber und Langzeitanleger. Mit der Möglichkeit, einen Großteil des Jahres im Meer zu schwimmen, der touristischen Aktivität der Region und Komfort nach europäischen Standards bietet Seafeild Residence Investoren sowohl hohe Lebensqualität als auch eine lukrative Investitionsmöglichkeit.",
+      "galeriHeading": "Galerie",
+      "paragraphs": { "0": "Ihr Traumhaus, Ihre Investition!", "1": "Wir stellen Ihnen Montenegros prestigeträchtigste Projekte mit moderner Architektur und komfortorientierten Wohnräumen vor." },
+      "imageAltFallback": "Seafield Residences"
+    },
+    "asis": { "pageTitle": "Asis Adriatic", "galeriHeading": "Galerie", "imageAltFallback": "Asis Adriatic" }
+  },
+  "Iletisim": {
+    "heading": "Kontakt",
+    "subHeading": "Wir sind für Sie da. Füllen Sie das Formular aus und wir melden uns bei Ihnen.",
+    "paragraph": "Vielleicht haben Sie den ersten Schritt getan – wie wäre es, den zweiten gemeinsam zu tun? Wir laden Sie ein, uns an Ihrer Seite zu haben, während Sie Ihre Träume verwirklichen. Lassen Sie uns bei einer Tasse Kaffee in eleganter Atmosphäre über unsere Projekte und Ihre Ideen sprechen. Zögern Sie nicht, uns zu kontaktieren; jede große Reise beginnt mit einem gemeinsamen Schritt. Wir freuen uns auf Sie.",
+    "ariaLabel": "Kontaktinhalt",
+    "form": { "title": "Kontaktformular", "submit": "Senden", "placeholderAd": "Vorname", "placeholderSoyad": "Nachname", "placeholderNumara": "Telefonnummer", "placeholderEmail": "E-Mail", "placeholderMesaj": "Ihre Nachricht" }
   }
 }

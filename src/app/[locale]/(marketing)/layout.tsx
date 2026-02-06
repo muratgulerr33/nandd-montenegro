@@ -7,13 +7,13 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="flex min-h-dvh flex-col">
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-16">
+      <main className="vt-page flex-1 w-full bg-background">
         {children}
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }
 

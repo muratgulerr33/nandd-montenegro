@@ -14,20 +14,16 @@ import {
   SheetDescription,
   SheetClose,
 } from '@/components/ui/sheet'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 
 const NAV_LINK_CLASS =
-  "t-nav block py-3 rounded-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors"
+  "t-nav block py-3 rounded-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors tactile"
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
   const firstLinkRef = useRef<HTMLAnchorElement>(null)
   const t = useTranslations('Nav')
+  const tNav = useTranslations('mobileNav')
+  const tFooter = useTranslations('Footer')
 
   const handleLinkClick = () => {
     setOpen(false)
@@ -41,11 +37,11 @@ export function MobileNav() {
   const navItems = useMemo(
     () => [
       { href: "/", label: t('home'), isFirst: true },
-      { href: "/kurumsal", label: "Kurumsal", isFirst: false },
-      { href: "/projeler", label: "Projeler", isFirst: false },
+      { href: "/kurumsal", label: tFooter('navCompany'), isFirst: false },
+      { href: "/projeler", label: tFooter('navProjectsLink'), isFirst: false },
       { href: "/iletisim", label: t('contact'), isFirst: false },
     ],
-    [t]
+    [t, tFooter]
   )
 
   return (
@@ -53,7 +49,7 @@ export function MobileNav() {
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="h-11 w-11 shrink-0 rounded-full border border-border/60 bg-background/60 p-0 backdrop-blur hover:bg-muted/40 lg:hidden">
           <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
+          <span className="sr-only">{tNav('toggleMenu')}</span>
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -64,17 +60,17 @@ export function MobileNav() {
         onOpenAutoFocus={handleOpenAutoFocus}
       >
         <SheetHeader className="sr-only">
-          <SheetTitle>Menü</SheetTitle>
-          <SheetDescription>Sayfalara gitmek için menü</SheetDescription>
+          <SheetTitle>{tNav('menuTitle')}</SheetTitle>
+          <SheetDescription>{tNav('menuDescription')}</SheetDescription>
         </SheetHeader>
         {/* Header row: title + close aligned (shadcn-style) */}
         <div className="flex items-center justify-between min-h-14 h-14 px-4 border-b border-border shrink-0 pt-[env(safe-area-inset-top)]">
           <SheetTitle asChild>
-            <h2 className="t-h4 leading-none text-foreground">Menü</h2>
+            <h2 className="t-h4 leading-none text-foreground">{tNav('menuTitle')}</h2>
           </SheetTitle>
-          <SheetClose className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md ring-offset-background opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none">
+          <SheetClose className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md ring-offset-background opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none tactile tactile-sm">
             <XIcon className="size-4" aria-hidden />
-            <span className="sr-only">Kapat</span>
+            <span className="sr-only">{tNav('close')}</span>
           </SheetClose>
         </div>
         {/* Scrollable Nav Content */}
@@ -103,25 +99,11 @@ export function MobileNav() {
           
           {/* Auth Buttons */}
           <Button variant="outline" className="w-full" onClick={() => {}}>
-            Giriş Yap
+            {tNav('login')}
           </Button>
           <Button variant="outline" className="w-full" onClick={() => {}}>
-            Kayıt Ol
+            {tNav('signUp')}
           </Button>
-          
-          {/* Placeholder Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="w-full">
-                Placeholder Dropdown
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px]">
-              <DropdownMenuItem disabled>Item 1</DropdownMenuItem>
-              <DropdownMenuItem disabled>Item 2</DropdownMenuItem>
-              <DropdownMenuItem disabled>Item 3</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </SheetContent>
     </Sheet>

@@ -1,91 +1,96 @@
-import { getContent, toAbsoluteImageUrl } from '@/content/nandd';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 
-export default async function ProjelerPage() {
-  const seafield = getContent('tr').seafield;
-  const asis = getContent('tr').asis;
+const PROJECT_01_IMAGE = '/images/projects/project-01/project-01-exterior.webp';
+const PROJECT_02_IMAGE = '/images/projects/project-02/project-02-exterior.webp';
 
-  // Proje görselleri
-  const seafieldImage = seafield.content.images.find(img => 
-    img.src.includes('IMG_9748') || img.src.includes('2.png') || img.src.includes('3.png') || img.src.includes('4.png')
-  );
-  const asisImage = asis.content.images.find(img => 
-    img.src && !img.src.includes('logo') && !img.src.includes('NANDD')
-  );
+export default async function ProjelerPage() {
+  const t = await getTranslations('Projeler');
 
   return (
-    <div className="bg-background text-foreground space-y-12">
-      <div className="text-center space-y-4">
-        <h1 className="t-h1">
-          Projelerimiz
-        </h1>
-        <p className="t-lead text-muted-foreground max-w-2xl mx-auto">
-          Montenegro&apos;da hayalinizdeki yaşamı keşfedin.
-        </p>
-      </div>
+    <div className="bg-background text-foreground">
+      <section
+        className="w-full px-6 py-16 md:py-24 bg-background"
+        aria-labelledby="projeler-heading"
+      >
+        <div className="max-w-5xl mx-auto">
+          <h1 id="projeler-heading" className="t-h1 text-center text-foreground">
+            {t('heading')}
+          </h1>
+          <p className="t-body text-muted-foreground text-center max-w-2xl mx-auto mt-4">
+            {t('lead')}
+          </p>
+        </div>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Seafield Residences */}
-        <Card className="border-border/60">
-          {seafieldImage && (
-            <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
-              <Image
-                src={toAbsoluteImageUrl(seafieldImage.src)}
-                alt={seafieldImage.alt || 'Seafield Residences'}
-                fill
-                className="object-cover rounded-md border border-border/40"
-              />
-            </div>
-          )}
-          <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary">Residence</Badge>
-            </div>
-            <CardTitle className="t-h4">Seafield Residences</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="t-muted">
-              Montenegro&apos;nun Bar şehrinde, muhteşem Adriyatik denizi manzarasıyla öne çıkan prestijli bir konut projesi.
-            </CardDescription>
-            <Button asChild variant="link" className="px-0 mt-4">
-              <Link href="/projeler/seafield-residences">Detayları Gör →</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      <section
+        className="w-full px-6 py-16 md:py-24 bg-surface-1"
+        aria-label={t('ariaLabel')}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <article className="flex flex-col rounded-lg border border-border overflow-hidden bg-card">
+              <div className="relative w-full aspect-video bg-muted overflow-hidden">
+                <Image
+                  src={PROJECT_01_IMAGE}
+                  alt={t('items.0.imageAlt')}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="p-6 space-y-2">
+                <p className="t-small text-muted-foreground uppercase tracking-wide">
+                  {t('items.0.tag')}
+                </p>
+                <h2 className="t-h4 text-foreground">{t('items.0.title')}</h2>
+                <p className="t-muted text-muted-foreground">
+                  {t('items.0.description')}
+                </p>
+                <Button
+                  asChild
+                  variant="default"
+                  size="default"
+                  className="mt-2 w-fit rounded-full px-6 h-10"
+                >
+                  <Link href="/projeler/seafield-residences">{t('items.0.cta')}</Link>
+                </Button>
+              </div>
+            </article>
 
-        {/* Asis Adriatic */}
-        <Card className="border-border/60">
-          {asisImage && (
-            <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
-              <Image
-                src={toAbsoluteImageUrl(asisImage.src)}
-                alt={asisImage.alt || 'Asis Adriatic'}
-                fill
-                className="object-cover rounded-md border border-border/40"
-              />
-            </div>
-          )}
-          <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary">Investment</Badge>
-            </div>
-            <CardTitle className="t-h4">Asis Adriatic</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="t-muted">
-              Modern tasarımı ve denize yakınlığı ile ideal bir yaşam alanı.
-            </CardDescription>
-            <Button asChild variant="link" className="px-0 mt-4">
-              <Link href="/projeler/asis-adriatic">Detayları Gör →</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+            <article className="flex flex-col rounded-lg border border-border overflow-hidden bg-card">
+              <div className="relative w-full aspect-video bg-muted overflow-hidden">
+                <Image
+                  src={PROJECT_02_IMAGE}
+                  alt={t('items.1.imageAlt')}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="p-6 space-y-2">
+                <p className="t-small text-muted-foreground uppercase tracking-wide">
+                  {t('items.1.tag')}
+                </p>
+                <h2 className="t-h4 text-foreground">{t('items.1.title')}</h2>
+                <p className="t-muted text-muted-foreground">
+                  {t('items.1.description')}
+                </p>
+                <Button
+                  asChild
+                  variant="default"
+                  size="default"
+                  className="mt-2 w-fit rounded-full px-6 h-10"
+                >
+                  <Link href="/projeler/asis-adriatic">{t('items.1.cta')}</Link>
+                </Button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
-

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -6,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import { hasLocale } from 'next-intl';
 import { Geist, Manrope } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import { PageTransitionController } from '@/components/page-transition-controller';
 import '../globals.css';
 
 const geist = Geist({
@@ -50,11 +52,19 @@ export default async function LocaleLayout({
   return (
       <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${geist.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/webp" href="/icon.webp" />
+        <link rel="shortcut icon" type="image/webp" href="/icon.webp" />
+        <link rel="icon" type="image/png" href="/icon.png" />
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
       </head>
       <body className="antialiased bg-background text-foreground font-sans" suppressHydrationWarning>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
+            <Suspense fallback={null}>
+              <PageTransitionController />
+            </Suspense>
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>

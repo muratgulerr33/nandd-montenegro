@@ -15,7 +15,7 @@ export async function SiteHeader() {
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur border-b border-border/60">
       <div className="container mx-auto flex min-h-[56px] items-center justify-between gap-2 px-4 py-2">
         {/* Brand - Sol */}
-        <Link href="/" className="flex items-center shrink-0 py-1">
+        <Link href="/" className="flex items-center shrink-0 py-1 tactile">
           <NanddLogo />
         </Link>
 

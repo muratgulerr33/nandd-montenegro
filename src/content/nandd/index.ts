@@ -18,11 +18,11 @@ export const asis = asisData;
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- locale ileride kullanılacak
 export function getContent(locale: string): {
-  home: ContentData;
-  kurumsal: ContentData;
-  iletisim: ContentData;
-  seafield: ContentData;
-  asis: ContentData;
+  home: typeof homeData;
+  kurumsal: typeof kurumsalData;
+  iletisim: typeof iletisimData;
+  seafield: typeof seafieldData;
+  asis: typeof asisData;
 } {
   // Şimdilik her zaman TR içeriği döndür
   return {

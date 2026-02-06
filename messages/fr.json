@@ -10,6 +10,90 @@
   "Footer": {
     "description": "Découvrez la vie de vos rêves au Monténégro. Nouvelle vie clé en main.",
     "quickLinks": "Liens rapides",
-    "rights": "Tous droits réservés."
+    "rights": "Tous droits réservés.",
+    "ctaTitle": "Construisons ensemble la vie de vos rêves",
+    "ctaSubtitle": "Obtenez une consultation gratuite pour votre projet. Nous serons ravis de vous entendre.",
+    "ctaPrimary": "Nous contacter",
+    "ctaSecondary": "WhatsApp",
+    "brandBlurb": "Découvrez la vie de vos rêves au Monténégro. Nouvelle vie clé en main.",
+    "trustChip1": "Équipe expérimentée",
+    "trustChip2": "Processus transparent",
+    "trustChip3": "Orientation client",
+    "navCompany": "Entreprise",
+    "navProjects": "Projets",
+    "navHome": "Accueil",
+    "navCorporate": "À propos",
+    "navWhoWeAre": "Qui sommes-nous",
+    "navConsultation": "Conseil",
+    "navProjectsLink": "Projets",
+    "navContact": "Contact",
+    "contactHeading": "Contact",
+    "contactLink": "Page contact",
+    "contactPhone": "Téléphone",
+    "contactWhatsApp": "WhatsApp",
+    "contactTelegram": "Telegram",
+    "workingHours": "Heures d'ouverture : lun.–ven. 09:00–18:00"
+  },
+  "header": {
+    "themeToggle": "Changer de thème"
+  },
+  "mobileNav": {
+    "toggleMenu": "Ouvrir/fermer le menu",
+    "menuTitle": "Menu",
+    "menuDescription": "Menu de navigation",
+    "close": "Fermer",
+    "login": "Connexion",
+    "signUp": "S'inscrire"
+  },
+  "locale": {
+    "title": "Choix de la langue",
+    "description": "Changer la langue du site",
+    "heading": "Choisir la langue",
+    "chooseLanguage": "Sélectionner une langue",
+    "close": "Fermer"
+  },
+  "stickySocial": {
+    "phone": "Téléphone",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "chat": "Chat"
+  },
+  "Kurumsal": {
+    "pageTitle": "Pourquoi nous ?",
+    "pageLead": "Avec notre histoire depuis 2014 chez N.and.D Construction, nous construisons des dizaines de projets et des milliers de vies.",
+    "headings": { "bizKimiz": "Qui sommes-nous ?", "misyonumuz": "Notre mission", "vizyonumuz": "Notre vision" },
+    "paragraphs": {
+      "bizKimiz": "N.and.D Construction Company est une société de promotion immobilière à Dobro Vodo, Bar, Monténégro, proposant des projets résidentiels vue mer. Nos projets Seafeild Residence et Asis Adriatic offrent aux investisseurs des biens à forte valeur ajoutée pendant la longue saison estivale. Le Monténégro est une région où la mer est accessible 7 à 8 mois et où la population et le tourisme augmentent fortement en été, nos projets y sont donc très demandés.",
+      "misyon": "Notre mission est d'offrir à nos investisseurs des opportunités immobilières durables et à forte valeur ajoutée au Monténégro avec des rendements élevés à long terme. Nous privilégions la qualité et la confiance dans chaque projet tout en maintenant le confort et la satisfaction de nos investisseurs au plus haut niveau.",
+      "vizyon": "Notre vision est de faire de la côte monténégrine un pôle d'attraction pour les investisseurs internationaux en développant des projets modernes et innovants. Avec des projets comme Seafeild Residence et Asis Adriatic, nous offrons à nos investisseurs d'excellentes opportunités pour les vacances et l'investissement."
+    }
+  },
+  "Projeler": {
+    "heading": "Nos projets",
+    "lead": "Découvrez l'habitat premium et la valeur d'investissement au Monténégro.",
+    "ariaLabel": "Liste des projets",
+    "items": {
+      "0": { "tag": "Résidence", "title": "Seafield Residences", "description": "Un projet prestigieux à Bar, Monténégro, avec vue sur l'Adriatique ; expérience résidentielle premium avec détail architectural et confort.", "cta": "Découvrir le projet", "imageAlt": "Seafield Residences" },
+      "1": { "tag": "Investissement", "title": "Asis Adriatic", "description": "Un projet d'investissement premium au design moderne et à l'emplacement côtier, alliant qualité de vie et potentiel de valeur à long terme.", "cta": "Découvrir le projet", "imageAlt": "Asis Adriatic" }
+    },
+    "seafield": {
+      "pageTitle": "Seafield Residences",
+      "aboutHeading": "À propos",
+      "nedenHeading": "Pourquoi Seafeild Residence ?",
+      "nedenText": "Seafeild Residence est un projet résidentiel prestigieux à Bar, Monténégro, avec une vue imprenable sur la mer Adriatique. Avec son design moderne et sa proximité avec la mer, il offre un espace de vie idéal pour les vacanciers et les investisseurs à long terme.",
+      "galeriHeading": "Galerie",
+      "paragraphs": { "0": "La maison de vos rêves, votre investissement !", "1": "Nous vous présentons les projets les plus prestigieux du Monténégro avec une architecture moderne et des espaces de vie confortables." },
+      "imageAltFallback": "Seafield Residences"
+    },
+    "asis": { "pageTitle": "Asis Adriatic", "galeriHeading": "Galerie", "imageAltFallback": "Asis Adriatic" }
+  },
+  "Iletisim": {
+    "heading": "Contact",
+    "subHeading": "Nous sommes là pour vous. Remplissez le formulaire et nous vous recontacterons.",
+    "paragraph": "Vous avez peut-être fait le premier pas ; et si nous faisions le second ensemble ? Nous vous invitons à nous avoir à vos côtés pour réaliser vos rêves.",
+    "ariaLabel": "Contenu contact",
+    "form": { "title": "Formulaire de contact", "submit": "Envoyer", "placeholderAd": "Prénom", "placeholderSoyad": "Nom", "placeholderNumara": "Téléphone", "placeholderEmail": "Email", "placeholderMesaj": "Votre message" }
   }
 }
