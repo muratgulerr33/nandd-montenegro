@@ -16,6 +16,7 @@ export const asis = asisData;
  * Şimdilik tüm locale'ler için TR içeriği döndürür.
  * İleride locale bazlı JSON eklenince genişletilebilir.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- locale ileride kullanılacak
 export function getContent(locale: string): {
   home: ContentData;
   kurumsal: ContentData;

@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import { useLocale } from 'next-intl'
+import { XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -75,9 +76,14 @@ export function LocaleDrawer() {
           <DrawerTitle>Dil Seçimi</DrawerTitle>
           <DrawerDescription>Sitenin dilini değiştir</DrawerDescription>
         </DrawerHeader>
+        {/* Header row: title + close (same logic/safe area as mobile menu Sheet) */}
         <div className="shrink-0 border-b border-border">
-          <div className="flex items-center h-14 px-4">
+          <div className="flex items-center justify-between h-14 px-4 pt-[env(safe-area-inset-top)]">
             <h2 className="t-h4 leading-none text-foreground">Dil Seçin</h2>
+            <DrawerClose className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md ring-offset-background opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none">
+              <XIcon className="size-4" aria-hidden />
+              <span className="sr-only">Kapat</span>
+            </DrawerClose>
           </div>
           <p className="px-4 pb-2 t-caption">Bir dil seçin</p>
         </div>

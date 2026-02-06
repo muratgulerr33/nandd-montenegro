@@ -27,7 +27,7 @@ export function ContactForm({ fields }: ContactFormProps) {
   };
 
   return (
-    <Card className="bg-card shadow-sm">
+    <Card>
       <CardHeader>
         <CardTitle>İletişim Formu</CardTitle>
       </CardHeader>

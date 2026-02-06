@@ -30,13 +30,15 @@ function SheetPortal({
 
 function SheetOverlay({
   className,
+  forceMount,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
   return (
     <SheetPrimitive.Overlay
+      forceMount={forceMount}
       data-slot="sheet-overlay"
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-overlay",
+        "transform-gpu [will-change:opacity] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-overlay",
         className
       )}
       {...props}
@@ -49,18 +51,21 @@ function SheetContent({
   children,
   side = "right",
   hideCloseButton,
+  forceMount,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left"
   hideCloseButton?: boolean
+  forceMount?: boolean
 }) {
   return (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay forceMount={forceMount} />
       <SheetPrimitive.Content
         data-slot="sheet-content"
+        forceMount={forceMount}
         className={cn(
-          "bg-surface-2 data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-popover transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+          "transform-gpu [will-change:transform] bg-surface-2 data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-popover transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
           side === "right" &&
             "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
           side === "left" &&

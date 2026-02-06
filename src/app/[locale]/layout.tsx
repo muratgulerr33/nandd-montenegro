@@ -45,8 +45,13 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages();
 
+  const noFlashScript = `(function(){try{var k='nandd-theme';var s=typeof localStorage!=='undefined'?localStorage.getItem(k):null;var d=s==='dark'||(s!=='light'&&typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(typeof document!=='undefined')document.documentElement.classList.toggle('dark',!!d);}catch(e){}})();`;
+
   return (
-      <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${geist.variable} ${manrope.variable}`}>
+      <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${geist.variable} ${manrope.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
+      </head>
       <body className="antialiased bg-background text-foreground font-sans" suppressHydrationWarning>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>

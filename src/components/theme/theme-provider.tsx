@@ -10,7 +10,9 @@ export function ThemeProvider({
     <NextThemesProvider
       storageKey="nandd-theme"
       attribute="class"
+      defaultTheme="system"
       enableSystem
+      enableColorScheme={false}
       disableTransitionOnChange
       {...props}
     >

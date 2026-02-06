@@ -11,7 +11,7 @@ export async function SiteFooter() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="space-y-4">
-            <h3 className="font-display text-lg font-semibold">N-AND-D Construction</h3>
+            <h3 className="font-sans text-lg font-semibold">N-AND-D Construction</h3>
             <p className="text-sm text-muted-foreground">
               {tFooter('description')}
             </p>
@@ -37,7 +37,7 @@ export async function SiteFooter() {
         </div>
         
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-          © {year} N-AND-D Construction. {tFooter('rights')}
+          © <span suppressHydrationWarning>{year}</span> N-AND-D Construction. {tFooter('rights')}
         </div>
       </div>
     </footer>

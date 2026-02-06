@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
 const localeLabels: Record<string, string> = {
   tr: 'TR',
   en: 'EN',
@@ -38,7 +39,7 @@ export function LocaleSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="h-11 w-11 shrink-0 rounded-full p-0 text-sm font-medium">
           {localeLabels[locale] || locale.toUpperCase()}
         </Button>
       </DropdownMenuTrigger>
@@ -56,4 +57,3 @@ export function LocaleSwitcher() {
     </DropdownMenu>
   );
 }
-

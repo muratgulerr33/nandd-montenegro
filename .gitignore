@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+*.backup
 
 # debug
 npm-debug.log*
@@ -39,3 +40,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scripts (local / do not commit)
+/scripts
+
+# root-only report / temp docs (do not commit)
+/REPORT.md
+/SURFACE_AUDIT.md
+/UI_CHECKLIST.md
+/PATCH_SUMMARY.md
+/PERF_MENU_REPORT.md
+/TYPOGRAPHY_REPORT.md
+/TYPO_AUDIT_2026.md
+/theme-switch-clean-check.md
+/mobil-sidebar-fix.md
+/header-fix4-test-report.md
+/a11y-sheet-drawer-fix-report.md
+/eskisitemapnandd.md
+/eskisitemaphnandd.md
+/white label.md

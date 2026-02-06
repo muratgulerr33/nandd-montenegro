@@ -44,6 +44,20 @@ export default function StyleguidePage() {
                 <h1 className="t-h1">Heading 1</h1>
                 <h2 className="t-h2">Heading 2</h2>
                 <h3 className="t-h3">Heading 3</h3>
+                <h4 className="t-h4">Heading 4</h4>
+                <h5 className="t-h5">Heading 5</h5>
+                <h6 className="t-h6">Heading 6</h6>
+              </div>
+            </div>
+            <div>
+              <h2 className="t-h3 mb-4">Caption & Label</h2>
+              <div className="space-y-4">
+                <p className="t-caption">
+                  Caption: küçük yardımcı metin (12–13px), muted renk.
+                </p>
+                <p className="t-label">
+                  Label: buton/etiket metni (13–14px), weight 500–600.
+                </p>
               </div>
             </div>
 
