@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 import { InboxClient } from './InboxClient';
+import { InboxLayout } from './InboxLayout';
+import { SettingsTab } from './SettingsTab';
 
 type Props = { searchParams: Promise<{ key?: string; conv?: string }> };
 
@@ -10,8 +12,10 @@ export default async function InboxPage({ searchParams }: Props) {
     redirect('/');
   }
   return (
-    <div className="min-h-dvh bg-background">
+    <InboxLayout
+      settingsChildren={<SettingsTab secret={key} />}
+    >
       <InboxClient secret={key} initialConversationId={conv ?? undefined} />
-    </div>
+    </InboxLayout>
   );
 }

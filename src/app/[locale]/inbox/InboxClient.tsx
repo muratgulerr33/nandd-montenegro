@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const POLL_INTERVAL_MS = 3000;
@@ -29,7 +29,9 @@ function useAdminApi(secret: string | null) {
 
   const getConversations = useCallback(async (): Promise<Conversation[]> => {
     if (!secret) return [];
-    const res = await fetch('/api/chat/admin/conversations', { headers: headers() });
+    const res = await fetch('/api/chat/admin/conversations', {
+      headers: headers(),
+    });
     if (!res.ok) return [];
     return res.json();
   }, [secret]);
@@ -118,7 +120,7 @@ export function InboxClient({
   };
 
   return (
-    <div className="flex h-[calc(100dvh-2rem)] gap-4 p-4">
+    <div className="flex h-full min-h-0 gap-4 p-4">
       <Card className="w-80 shrink-0 flex flex-col bg-surface-2 shadow-soft border-border">
         <CardHeader className="border-b border-border">
           <h1 className="t-h5 text-foreground">Konuşmalar</h1>
@@ -138,7 +140,9 @@ export function InboxClient({
                 selectedId === c.id && 'bg-surface-1'
               )}
             >
-              <p className="t-small text-muted-foreground truncate">{c.visitorId}</p>
+              <p className="t-small text-muted-foreground truncate">
+                {c.visitorId}
+              </p>
               <p className="t-caption text-muted-foreground">
                 {new Date(c.lastMessageAt).toLocaleString('tr-TR')}
               </p>
@@ -154,7 +158,9 @@ export function InboxClient({
         </CardHeader>
         <CardContent className="flex-1 flex flex-col min-h-0 p-4">
           {!selectedId ? (
-            <p className="t-body text-muted-foreground">Soldan bir konuşma seçin.</p>
+            <p className="t-body text-muted-foreground">
+              Soldan bir konuşma seçin.
+            </p>
           ) : (
             <>
               <div className="flex-1 overflow-y-auto space-y-3 mb-4 min-h-[200px]">
