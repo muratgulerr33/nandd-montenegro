@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { conversations, messages } from '@/lib/db/schema';
-import { and, eq } from 'drizzle-orm';
+import { adminDevices, adminSettings, conversations, messages } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 import { sendPushToAdminDevices } from '@/lib/chat/push';
 
 const BODY_MAX = 2000;
@@ -74,18 +74,34 @@ export async function POST(request: Request) {
       .set({ lastMessageAt: now, lastGuestMessageAt: now })
       .where(eq(conversations.id, conversationId));
 
-    const { adminDevices } = await import('@/lib/db/schema');
-    const devices = await db
-      .select({ fcmToken: adminDevices.fcmToken })
-      .from(adminDevices)
-      .where(and(eq(adminDevices.isActive, true)));
-    const tokens = devices.map((d) => d.fcmToken).filter(Boolean);
-    sendPushToAdminDevices(
-      tokens,
-      'Yeni mesaj',
-      trimmed.length > 80 ? `${trimmed.slice(0, 80)}…` : trimmed,
-      conversationId
-    ).catch(() => {});
+    const [settings] = await db
+      .select({ dndEnabled: adminSettings.dndEnabled, notifyMode: adminSettings.notifyMode })
+      .from(adminSettings)
+      .where(eq(adminSettings.id, 1))
+      .limit(1);
+
+    let shouldPush = false;
+    if (settings?.dndEnabled || settings?.notifyMode === 'silent') {
+      shouldPush = false;
+    } else if (settings?.notifyMode === 'every_message') {
+      shouldPush = true;
+    } else if (settings?.notifyMode === 'first_message') {
+      shouldPush = conv.lastGuestMessageAt == null;
+    }
+
+    if (shouldPush) {
+      const devices = await db
+        .select({ fcmToken: adminDevices.fcmToken })
+        .from(adminDevices)
+        .where(eq(adminDevices.isActive, true));
+      const tokens = devices.map((d) => d.fcmToken).filter(Boolean);
+      sendPushToAdminDevices(
+        tokens,
+        'Yeni mesaj',
+        trimmed.length > 80 ? `${trimmed.slice(0, 80)}…` : trimmed,
+        conversationId
+      ).catch(() => {});
+    }
 
     return NextResponse.json({ id: msg?.id, createdAt: msg?.createdAt });
   } catch (e) {
