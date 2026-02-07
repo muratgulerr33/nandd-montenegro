@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Chat smoke: guest/start -> guest/message -> admin/conversations (hasUnread) -> mark-read
-# Kullanım: ADMIN_INBOX_SECRET=xxx [BASE_URL=http://localhost:3000] ./scripts/smoke-chat.sh
+# Kullanım: ADMIN_SECRET=xxx [BASE_URL=http://127.0.0.1:3000] ./scripts/smoke-chat.sh
 
 set -e
-BASE_URL="${BASE_URL:-${NEXT_PUBLIC_APP_URL:-http://localhost:3000}}"
+BASE_URL="${BASE_URL:-http://127.0.0.1:3000}"
 BASE_URL="${BASE_URL%/}"
-SECRET="${ADMIN_INBOX_SECRET:-}"
+SECRET="${ADMIN_SECRET:-}"
 
 if [ -z "$SECRET" ]; then
-  echo "ADMIN_INBOX_SECRET gerekli. Örn: ADMIN_INBOX_SECRET=xxx $0" >&2
+  echo "ADMIN_SECRET gerekli. Örn: ADMIN_SECRET=xxx npm run smoke-chat" >&2
   exit 1
 fi
 
