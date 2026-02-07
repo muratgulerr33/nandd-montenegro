@@ -13,7 +13,8 @@
     "db:migrate": "bash scripts/db-migrate-fallback.sh",
     "db:migrate:drizzle": "drizzle-kit migrate",
     "db:apply": "bash scripts/db-apply.sh",
-    "chat:smoke": "bash scripts/chat-smoke.sh"
+    "chat:smoke": "bash scripts/chat-smoke.sh",
+    "smoke-chat": "bash scripts/smoke-chat.sh"
   },
   "dependencies": {
     "firebase-admin": "^13.0.0",
