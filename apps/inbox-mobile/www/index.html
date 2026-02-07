@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1" />
+  <title>NANDD Inbox</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 1rem; background: #fff; }
+    .loading { color: #666; }
+    a { color: #0066cc; }
+  </style>
+</head>
+<body>
+  <p id="status" class="loading">Yükleniyor…</p>
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var secret = params.get('key');
+      var baseUrl = params.get('base') || '';
+      if (!baseUrl && window.Capacitor && window.Capacitor.getServerUrl) {
+        baseUrl = window.Capacitor.getServerUrl().replace(/\/$/, '');
+      }
+      if (!baseUrl) baseUrl = window.location.origin;
+
+      if (!secret) {
+        document.getElementById('status').innerHTML = 'Erişim için <b>?key=ADMIN_INBOX_SECRET</b> ile girin. Örn: <a href="?key=YOUR_SECRET">?key=YOUR_SECRET</a>';
+        return;
+      }
+      window.__INBOX_PUSH_CONFIG__ = {
+        baseUrl: baseUrl,
+        secret: secret,
+        locale: params.get('locale') || 'tr'
+      };
+    })();
+  </script>
+  <script src="register-push.js"></script>
+</body>
+</html>
