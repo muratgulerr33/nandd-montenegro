@@ -18,7 +18,7 @@ echo "---"
 # 1) Guest start
 echo "1. POST /api/chat/guest/start"
 START_JSON="$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/chat/guest/start")"
-START_BODY="$(echo "$START_JSON" | head -n -1)"
+START_BODY="$(echo "$START_JSON" | sed '$d')"
 START_CODE="$(echo "$START_JSON" | tail -n 1)"
 if [ "$START_CODE" != "200" ]; then
   echo "  FAIL status=$START_CODE" >&2
@@ -43,7 +43,7 @@ MSG_JSON="$(curl -s -w "\n%{http_code}" -X POST -H "Content-Type: application/js
 MSG_CODE="$(echo "$MSG_JSON" | tail -n 1)"
 if [ "$MSG_CODE" != "200" ]; then
   echo "  FAIL status=$MSG_CODE" >&2
-  echo "$MSG_JSON" | head -n -1 >&2
+  echo "$MSG_JSON" | sed '$d' >&2
   exit 1
 fi
 echo "  OK"
@@ -51,7 +51,7 @@ echo "  OK"
 # 3) Admin conversations (check hasUnread)
 echo "3. GET /api/chat/admin/conversations"
 CONV_LIST="$(curl -s -w "\n%{http_code}" -H "x-admin-secret: $SECRET" "$BASE_URL/api/chat/admin/conversations")"
-CONV_LIST_BODY="$(echo "$CONV_LIST" | head -n -1)"
+CONV_LIST_BODY="$(echo "$CONV_LIST" | sed '$d')"
 CONV_LIST_CODE="$(echo "$CONV_LIST" | tail -n 1)"
 if [ "$CONV_LIST_CODE" != "200" ]; then
   echo "  FAIL status=$CONV_LIST_CODE" >&2
@@ -72,7 +72,7 @@ MARK_JSON="$(curl -s -w "\n%{http_code}" -X POST -H "Content-Type: application/j
 MARK_CODE="$(echo "$MARK_JSON" | tail -n 1)"
 if [ "$MARK_CODE" != "200" ]; then
   echo "  FAIL status=$MARK_CODE" >&2
-  echo "$MARK_JSON" | head -n -1 >&2
+  echo "$MARK_JSON" | sed '$d' >&2
   exit 1
 fi
 echo "  OK"
