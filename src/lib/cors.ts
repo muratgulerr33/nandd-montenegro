@@ -7,8 +7,11 @@ const DEFAULT_ORIGINS = [
 ];
 
 export function getAllowedOrigins(): string[] {
-  const fromEnv = process.env.ALLOWED_ORIGINS?.trim();
-  const extra = fromEnv ? fromEnv.split(',').map((o) => o.trim()).filter(Boolean) : [];
+  const raw = process.env.ALLOWED_ORIGINS ?? '';
+  const trimmed = raw.trim();
+  const extra = trimmed
+    ? trimmed.split(',').map((o) => o.trim()).filter((o) => o.length > 0)
+    : [];
   return [...new Set([...DEFAULT_ORIGINS, ...extra])];
 }
 
