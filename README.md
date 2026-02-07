@@ -6,15 +6,26 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Chat MVP (local)
+
+Veritabanı **5434** portunda çalışır (diğer projeler 5432/5433 kullanıyorsa).
+
+1. **Postgres (Docker):**
+   ```bash
+   docker compose up -d
+   ```
+2. **Ortam:** `.env` içinde `DATABASE_URL=postgresql://nandd:nandd@localhost:5434/nandd`, isteğe bağlı `ADMIN_INBOX_SECRET=your-secret`, push için `FIREBASE_SERVICE_ACCOUNT_JSON_BASE64` (Firebase service account JSON’ın base64’ü).
+3. **Migration:**
+   ```bash
+   npm run db:migrate
+   ```
+4. **Uygulama:** `npm run dev` → site açılır.
+5. **Test:** Ana sayfada mobil görünümde sohbet balonuna tıkla → drawer açılır, mesaj at. Admin: `/[locale]/inbox?key=ADMIN_INBOX_SECRET` → konuşma listesi, yanıt yaz. Guest tarafında polling ile cevap görünür.
+6. **Design audit:** `npm run design:audit` (hardcode renk kontrolü). **Build:** `npm run build`.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
