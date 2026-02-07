@@ -1,12 +1,20 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { unlockInboxAudio, playInboxSound, type InboxSoundPreset } from '@/lib/chat/inbox-sound';
 import { cn } from '@/lib/utils';
 
 type TestPushResult = {
@@ -83,11 +91,155 @@ function TestPushCard({ secret }: { secret: string }) {
   );
 }
 
+function formatLastSeen(iso: string | null): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  if (diffMs < 60_000) return 'Az önce';
+  if (diffMs < 3600_000) return `${Math.floor(diffMs / 60_000)} dk önce`;
+  if (diffMs < 86400_000) return `${Math.floor(diffMs / 3600_000)} sa önce`;
+  return d.toLocaleDateString();
+}
+
+function DevicesCard({ secret }: { secret: string }) {
+  const [items, setItems] = useState<DeviceItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [toggleError, setToggleError] = useState<string | null>(null);
+
+  const fetchDevices = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/chat/admin/devices', {
+        headers: { 'x-admin-secret': secret },
+      });
+      if (!res.ok) {
+        setError(res.status === 401 ? 'Yetkisiz' : `Hata ${res.status}`);
+        setItems([]);
+        return;
+      }
+      const data = (await res.json()) as { items: DeviceItem[] };
+      setItems(data.items ?? []);
+    } catch {
+      setError('Yüklenemedi');
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [secret]);
+
+  useEffect(() => {
+    fetchDevices();
+  }, [fetchDevices]);
+
+  const handleToggle = async (deviceId: string, nextActive: boolean) => {
+    const prev = items.find((i) => i.id === deviceId);
+    if (!prev) return;
+    setTogglingId(deviceId);
+    setToggleError(null);
+    setItems((list) =>
+      list.map((i) => (i.id === deviceId ? { ...i, isActive: nextActive } : i))
+    );
+    try {
+      const res = await fetch('/api/chat/admin/devices/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ deviceId, isActive: nextActive }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setItems((list) =>
+          list.map((i) => (i.id === deviceId ? { ...i, isActive: prev.isActive } : i))
+        );
+        setToggleError(data.error ?? `Hata ${res.status}`);
+      }
+    } catch {
+      setItems((list) =>
+        list.map((i) => (i.id === deviceId ? { ...i, isActive: prev.isActive } : i))
+      );
+      setToggleError('İstek başarısız');
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
+  return (
+    <Card className="bg-surface-2 border-border shadow-soft">
+      <CardHeader className="pb-2">
+        <h2 className="t-small font-medium text-foreground">Cihazlar</h2>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <p className="t-caption text-muted-foreground">
+          Push bildirimleri alan cihazlar. Kapalı cihazlara bildirim gönderilmez.
+        </p>
+        {toggleError && (
+          <p className="t-caption text-destructive" role="alert">
+            {toggleError}
+          </p>
+        )}
+        {loading ? (
+          <p className="t-caption text-muted-foreground">Yükleniyor…</p>
+        ) : error ? (
+          <p className="t-caption text-destructive">{error}</p>
+        ) : items.length === 0 ? (
+          <p className="t-caption text-muted-foreground">Kayıtlı cihaz yok.</p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((d) => (
+              <li
+                key={d.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-surface-1 px-3 py-2"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="t-small font-medium text-foreground truncate">
+                    {d.label || d.tokenShort}
+                  </p>
+                  <p className="t-caption text-muted-foreground">
+                    {d.tokenShort} · {formatLastSeen(d.lastSeenAt)}
+                  </p>
+                </div>
+                <Switch
+                  checked={d.isActive}
+                  onCheckedChange={(checked) => handleToggle(d.id, checked)}
+                  disabled={togglingId === d.id}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 type NotifyMode = 'first_message' | 'every_message' | 'silent';
+
+type DeviceItem = {
+  id: string;
+  label: string;
+  tokenShort: string;
+  platform: string;
+  lastSeenAt: string | null;
+  isActive: boolean;
+};
+
+const INBOX_SOUND_OPTIONS: { value: InboxSoundPreset; label: string }[] = [
+  { value: 'soft_click', label: 'Yumuşak tıklama' },
+  { value: 'pop', label: 'Pop' },
+  { value: 'ding', label: 'Ding' },
+  { value: 'chime', label: 'Zil' },
+  { value: 'none', label: 'Ses yok' },
+];
 
 type SettingsState = {
   dndEnabled: boolean;
   notifyMode: NotifyMode;
+  inboxSound: string;
+  inboxSoundEnabled: boolean;
   firstName: string | null;
   lastName: string | null;
   avatarUrl: string | null;
@@ -99,15 +251,20 @@ const NOTIFY_LABELS: Record<NotifyMode, string> = {
   silent: 'Sessiz',
 };
 
+type SettingsGetResult =
+  | { ok: true; data: SettingsState }
+  | { ok: false; status: number };
+
 function useSettingsApi(secret: string | null) {
   const headers = (): HeadersInit =>
     secret ? { 'x-admin-secret': secret } : {};
 
-  const get = useCallback(async (): Promise<SettingsState | null> => {
-    if (!secret) return null;
+  const get = useCallback(async (): Promise<SettingsGetResult> => {
+    if (!secret) return { ok: false, status: 401 };
     const res = await fetch('/api/chat/admin/settings', { headers: headers() });
-    if (!res.ok) return null;
-    return res.json();
+    if (!res.ok) return { ok: false, status: res.status };
+    const data = (await res.json()) as SettingsState;
+    return { ok: true, data };
   }, [secret]);
 
   const save = useCallback(
@@ -129,39 +286,93 @@ function useSettingsApi(secret: string | null) {
 
 export function SettingsTab({ secret }: { secret: string }) {
   const api = useSettingsApi(secret);
+  const didInitRef = useRef(false);
+  const apiGetRef = useRef(api.get);
+  apiGetRef.current = api.get;
+
   const [settings, setSettings] = useState<SettingsState | null>(null);
+  const [loadError, setLoadError] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
+  const [savedFeedback, setSavedFeedback] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [localFirstName, setLocalFirstName] = useState('');
   const [localLastName, setLocalLastName] = useState('');
   const [localAvatarUrl, setLocalAvatarUrl] = useState('');
+  const [localDndEnabled, setLocalDndEnabled] = useState(false);
+  const [localNotifyMode, setLocalNotifyMode] = useState<NotifyMode>('first_message');
+  const [localInboxSound, setLocalInboxSound] = useState<InboxSoundPreset>('soft_click');
+  const [localInboxSoundEnabled, setLocalInboxSoundEnabled] = useState(true);
+  const [prefsDirty, setPrefsDirty] = useState(false);
+  const [soundDebug, setSoundDebug] = useState<{
+    lastPlayedAt: number;
+    lastReason: string;
+  } | null>(null);
 
+  const applySettingsToLocal = useCallback((data: SettingsState) => {
+    setLocalFirstName(data.firstName ?? '');
+    setLocalLastName(data.lastName ?? '');
+    setLocalAvatarUrl(data.avatarUrl ?? '');
+    setLocalDndEnabled(data.dndEnabled);
+    setLocalNotifyMode(data.notifyMode);
+    setLocalInboxSound((data.inboxSound as InboxSoundPreset) || 'soft_click');
+    setLocalInboxSoundEnabled(data.inboxSoundEnabled ?? true);
+  }, []);
+
+  // Fetch settings once on mount or when secret changes (tab remount = fresh GET)
   useEffect(() => {
+    if (!secret) return;
+    if (didInitRef.current) return;
+    didInitRef.current = true;
+    setLoadError(null);
     const load = async () => {
-      const data = await api.get();
-      if (data) {
-        setSettings(data);
-        setLocalFirstName(data.firstName ?? '');
-        setLocalLastName(data.lastName ?? '');
-        setLocalAvatarUrl(data.avatarUrl ?? '');
+      const result = await apiGetRef.current();
+      if (result.ok) {
+        setSettings(result.data);
+        applySettingsToLocal(result.data);
+      } else {
+        setLoadError(result.status);
       }
     };
     load();
-  }, [api]);
+  }, [secret, applySettingsToLocal]);
+
+  useEffect(() => {
+    didInitRef.current = false;
+  }, [secret]);
+
+  // Debug: when debugInboxSound is on, poll window.__inboxSoundDebug for UI
+  useEffect(() => {
+    if (typeof localStorage === 'undefined' || localStorage.getItem('debugInboxSound') !== '1')
+      return;
+    const tick = () => {
+      const w = window as unknown as {
+        __inboxSoundDebug?: { lastPlayedAt: number; lastReason: string };
+      };
+      if (w.__inboxSoundDebug)
+        setSoundDebug({ ...w.__inboxSoundDebug });
+    };
+    tick();
+    const id = setInterval(tick, 2000);
+    return () => clearInterval(id);
+  }, []);
 
   const update = useCallback(
     async (patch: Partial<SettingsState>) => {
       if (!settings) return;
       setSaving(true);
-      const next = { ...settings, ...patch };
+      setSavedFeedback(false);
       const saved = await api.save(patch);
       setSaving(false);
       if (saved) {
         setSettings(saved);
+        applySettingsToLocal(saved);
         setDirty(false);
+        setPrefsDirty(false);
+        setSavedFeedback(true);
+        setTimeout(() => setSavedFeedback(false), 2500);
       }
     },
-    [api, settings]
+    [api, settings, applySettingsToLocal]
   );
 
   const handleSaveProfile = async () => {
@@ -171,6 +382,31 @@ export function SettingsTab({ secret }: { secret: string }) {
       avatarUrl: localAvatarUrl.trim() || null,
     });
   };
+
+  const handleSavePrefs = async () => {
+    await update({
+      dndEnabled: localDndEnabled,
+      notifyMode: localNotifyMode,
+      inboxSound: localInboxSound,
+      inboxSoundEnabled: localInboxSoundEnabled,
+    });
+  };
+
+  if (loadError != null) {
+    const message =
+      loadError === 401
+        ? 'Yetkisiz. Lütfen inbox’a ?key= ile giriş yapın.'
+        : loadError >= 500
+          ? 'Sunucu hatası. Tekrar deneyin.'
+          : `Yüklenemedi (${loadError}).`;
+    return (
+      <div className="flex flex-1 items-center justify-center p-4">
+        <p className="t-body text-destructive" role="alert">
+          {message}
+        </p>
+      </div>
+    );
+  }
 
   if (!settings) {
     return (
@@ -182,7 +418,14 @@ export function SettingsTab({ secret }: { secret: string }) {
 
   return (
     <div className="flex flex-1 flex-col overflow-y-auto p-4">
-      <h1 className="t-h5 text-foreground mb-4">Ayarlar</h1>
+      <div className="flex items-center gap-2 mb-4">
+        <h1 className="t-h5 text-foreground">Ayarlar</h1>
+        {savedFeedback && (
+          <Badge variant="secondary" className="bg-primary/15 text-primary">
+            Kaydedildi
+          </Badge>
+        )}
+      </div>
       <div className="space-y-4">
         <Card className="bg-surface-2 border-border shadow-soft">
           <CardHeader className="pb-2">
@@ -199,8 +442,11 @@ export function SettingsTab({ secret }: { secret: string }) {
               Sohbeti Aç/Kapat (DND)
             </h2>
             <Switch
-              checked={settings.dndEnabled}
-              onCheckedChange={(checked) => update({ dndEnabled: checked })}
+              checked={localDndEnabled}
+              onCheckedChange={(checked) => {
+                setLocalDndEnabled(checked);
+                setPrefsDirty(true);
+              }}
               disabled={saving}
             />
           </CardHeader>
@@ -223,6 +469,73 @@ export function SettingsTab({ secret }: { secret: string }) {
         </Card>
 
         <Card className="bg-surface-2 border-border shadow-soft">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <h2 className="t-small font-medium text-foreground">
+              Bildirim Sesi
+            </h2>
+            <Switch
+              checked={localInboxSoundEnabled}
+              onCheckedChange={(checked) => {
+                setLocalInboxSoundEnabled(checked);
+                setPrefsDirty(true);
+              }}
+              disabled={saving}
+            />
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="t-caption text-muted-foreground">
+              Yeni guest mesajında (DND kapalıyken) çalacak ses.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <Label htmlFor="inbox_sound" className="t-caption text-muted-foreground shrink-0">
+                Ses
+              </Label>
+              <Select
+                value={localInboxSound}
+                onValueChange={(v) => {
+                  setLocalInboxSound(v as InboxSoundPreset);
+                  setPrefsDirty(true);
+                  if (v !== 'none') void unlockInboxAudio().then(() => playInboxSound(v as InboxSoundPreset));
+                }}
+                disabled={saving || !localInboxSoundEnabled}
+              >
+                <SelectTrigger id="inbox_sound" className="bg-surface-1 w-full max-w-[200px]">
+                  <SelectValue placeholder="Ses seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {INBOX_SOUND_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={saving || !localInboxSoundEnabled || localInboxSound === 'none'}
+                onClick={async () => {
+                  await unlockInboxAudio();
+                  await playInboxSound(localInboxSound);
+                }}
+              >
+                Sesi Test Et
+              </Button>
+            </div>
+            {typeof localStorage !== 'undefined' && localStorage.getItem('debugInboxSound') === '1' && (
+              <p className="t-caption text-muted-foreground mt-2 pt-2 border-t border-border">
+                Debug: Last sound played at{' '}
+                {soundDebug?.lastPlayedAt
+                  ? new Date(soundDebug.lastPlayedAt).toLocaleTimeString()
+                  : '—'}{' '}
+                / reason: {soundDebug?.lastReason ?? '—'}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-surface-2 border-border shadow-soft">
           <CardHeader className="pb-2">
             <h2 className="t-small font-medium text-foreground">
               Bildirim ayarları
@@ -238,15 +551,18 @@ export function SettingsTab({ secret }: { secret: string }) {
                   key={mode}
                   className={cn(
                     'flex items-center gap-2 rounded-md border border-border px-3 py-2 cursor-pointer transition-colors',
-                    settings.notifyMode === mode && 'bg-surface-1 border-primary/30'
+                    localNotifyMode === mode && 'bg-surface-1 border-primary/30'
                   )}
                 >
                   <input
                     type="radio"
                     name="notify_mode"
                     value={mode}
-                    checked={settings.notifyMode === mode}
-                    onChange={() => update({ notifyMode: mode })}
+                    checked={localNotifyMode === mode}
+                    onChange={() => {
+                      setLocalNotifyMode(mode);
+                      setPrefsDirty(true);
+                    }}
                     disabled={saving}
                     className="size-4 border-border text-primary"
                   />
@@ -256,8 +572,20 @@ export function SettingsTab({ secret }: { secret: string }) {
                 </label>
               ))}
             </div>
+            {prefsDirty && (
+              <Button
+                size="sm"
+                onClick={handleSavePrefs}
+                disabled={saving}
+                className="mt-2"
+              >
+                {saving ? 'Kaydediliyor…' : 'Kaydet'}
+              </Button>
+            )}
           </CardContent>
         </Card>
+
+        <DevicesCard secret={secret} />
 
         <TestPushCard secret={secret} />
 

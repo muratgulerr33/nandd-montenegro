@@ -3,9 +3,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChatDrawer } from '@/components/chat-drawer';
+import { IconWhatsApp } from '@/components/icons/brand';
 import {
   DockPhoneCall,
-  DockWhatsApp,
   DockInstagram,
   DockTelegram,
   DockYouTube,
@@ -26,7 +26,7 @@ const DOCK_ACTION_IDS = [
 
 const DOCK_ICONS = {
   phone: DockPhoneCall,
-  whatsapp: DockWhatsApp,
+  whatsapp: IconWhatsApp,
   instagram: DockInstagram,
   telegram: DockTelegram,
   youtube: DockYouTube,

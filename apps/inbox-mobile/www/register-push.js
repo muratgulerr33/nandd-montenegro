@@ -5,7 +5,7 @@
  */
 (function () {
   var config = window.__INBOX_PUSH_CONFIG__;
-  if (!config || !config.secret) return;
+  if (!config || !config.secret || config.secret === '<PLACEHOLDER>') return;
   var baseUrl = (config.baseUrl || '').replace(/\/$/, '');
   var secret = config.secret;
   var locale = config.locale || 'tr';

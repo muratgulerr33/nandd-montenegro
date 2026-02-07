@@ -1,19 +1,30 @@
 'use client';
 
-import { Users, Inbox, Phone, MessageCircle, Settings } from 'lucide-react';
+import {
+  Users,
+  Inbox,
+  Phone,
+  MessageCircle,
+  Settings,
+  type LucideIcon,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export type InboxTab = 'visitors' | 'inbox' | 'calls' | 'quickwp' | 'settings';
 
+/** Sabit ikon alanı (optik hizalama); tüm dock ikonları aynı outline dili. */
+const DOCK_ICON_SIZE = 20;
+const DOCK_ICON_STROKE = 2;
+
 type TabItem = {
   id: InboxTab;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   disabled: boolean;
 };
 
 const TABS: TabItem[] = [
-  { id: 'visitors', label: 'Ziyaretçiler', icon: Users, disabled: true },
+  { id: 'visitors', label: 'Ziyaretçiler', icon: Users, disabled: false },
   { id: 'inbox', label: 'Inbox', icon: Inbox, disabled: false },
   { id: 'calls', label: 'Aramalar', icon: Phone, disabled: true },
   { id: 'quickwp', label: 'Quick WP', icon: MessageCircle, disabled: true },
@@ -52,7 +63,17 @@ export function BottomNav({
               !isActive && !tab.disabled && 'text-muted-foreground'
             )}
           >
-            <Icon className="size-5" />
+            <span
+              className="flex shrink-0 items-center justify-center"
+              style={{ width: DOCK_ICON_SIZE, height: DOCK_ICON_SIZE }}
+              aria-hidden
+            >
+              <Icon
+                size={DOCK_ICON_SIZE}
+                strokeWidth={DOCK_ICON_STROKE}
+                className="shrink-0"
+              />
+            </span>
             <span className="t-caption text-[10px] leading-tight">
               {tab.disabled ? 'Yakında' : tab.label}
             </span>

@@ -8,6 +8,7 @@ import { hasLocale } from 'next-intl';
 import { Geist, Manrope } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { PageTransitionController } from '@/components/page-transition-controller';
+import { PublicOnlyDock } from '@/components/public/PublicOnlyDock';
 import '../globals.css';
 
 const geist = Geist({
@@ -65,7 +66,10 @@ export default async function LocaleLayout({
             <Suspense fallback={null}>
               <PageTransitionController />
             </Suspense>
-            {children}
+            <div className="min-h-dvh pb-28 md:pb-0">
+              {children}
+            </div>
+            <PublicOnlyDock />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

@@ -7,6 +7,15 @@ import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
 import { ensureDatabaseUrl, ensureAdminInboxSecret } from '@/lib/env';
 
 const ROW_ID = 1;
+const MIGRATION_INBOX_SOUND = '0004_admin_settings_inbox_sound';
+
+function isMissingInboxSoundColumn(e: unknown): boolean {
+  const msg = e instanceof Error ? e.message : String(e);
+  return (
+    /inbox_sound/i.test(msg) &&
+    (/column.*does not exist|does not exist|Unknown column|missing column/i.test(msg) || /inbox_sound/.test(msg))
+  );
+}
 
 export async function OPTIONS(request: Request) {
   return corsOptionsResponse(request);
@@ -30,6 +39,8 @@ export async function GET(request: Request) {
         NextResponse.json({
           dndEnabled: false,
           notifyMode: 'every_message',
+          inboxSound: 'soft_click',
+          inboxSoundEnabled: true,
           firstName: null,
           lastName: null,
           avatarUrl: null,
@@ -42,6 +53,8 @@ export async function GET(request: Request) {
       NextResponse.json({
         dndEnabled: row.dndEnabled,
         notifyMode: row.notifyMode,
+        inboxSound: row.inboxSound ?? 'soft_click',
+        inboxSoundEnabled: row.inboxSoundEnabled,
         firstName: row.firstName ?? null,
         lastName: row.lastName ?? null,
         avatarUrl: row.avatarUrl ?? null,
@@ -49,6 +62,19 @@ export async function GET(request: Request) {
       request
     );
   } catch (e) {
+    if (isMissingInboxSoundColumn(e)) {
+      console.error(
+        `chat admin settings GET: DB migration missing. Run migration "${MIGRATION_INBOX_SOUND}" (e.g. drizzle/0004_admin_settings_inbox_sound).`,
+        e
+      );
+      return withCorsHeaders(
+        NextResponse.json(
+          { error: 'db_migration_missing', migration: MIGRATION_INBOX_SOUND },
+          { status: 503 }
+        ),
+        request
+      );
+    }
     console.error('chat admin settings GET', e);
     return withCorsHeaders(
       NextResponse.json({ error: 'Server error' }, { status: 500 }),
@@ -58,6 +84,7 @@ export async function GET(request: Request) {
 }
 
 const NOTIFY_MODES = ['first_message', 'every_message', 'silent'] as const;
+const INBOX_SOUNDS = ['soft_click', 'pop', 'ding', 'chime', 'none'] as const;
 
 export async function POST(request: Request) {
   ensureDatabaseUrl();
@@ -70,12 +97,16 @@ export async function POST(request: Request) {
     const {
       dndEnabled,
       notifyMode,
+      inboxSound,
+      inboxSoundEnabled,
       firstName,
       lastName,
       avatarUrl,
     } = body as {
       dndEnabled?: boolean;
       notifyMode?: string;
+      inboxSound?: string;
+      inboxSoundEnabled?: boolean;
       firstName?: string | null;
       lastName?: string | null;
       avatarUrl?: string | null;
@@ -106,6 +137,12 @@ export async function POST(request: Request) {
       avatarUrl !== undefined
         ? (typeof avatarUrl === 'string' ? avatarUrl.slice(0, 512) : null)
         : (current?.avatarUrl ?? null);
+    const nextInboxSound =
+      typeof inboxSound === 'string' && INBOX_SOUNDS.includes(inboxSound as (typeof INBOX_SOUNDS)[number])
+        ? (inboxSound as (typeof INBOX_SOUNDS)[number])
+        : (current?.inboxSound ?? 'soft_click');
+    const nextInboxSoundEnabled =
+      typeof inboxSoundEnabled === 'boolean' ? inboxSoundEnabled : (current?.inboxSoundEnabled ?? true);
 
     await db
       .insert(adminSettings)
@@ -113,6 +150,8 @@ export async function POST(request: Request) {
         id: ROW_ID,
         dndEnabled: nextDnd,
         notifyMode: nextNotify,
+        inboxSound: nextInboxSound,
+        inboxSoundEnabled: nextInboxSoundEnabled,
         firstName: nextFirstName,
         lastName: nextLastName,
         avatarUrl: nextAvatarUrl,
@@ -122,6 +161,8 @@ export async function POST(request: Request) {
         set: {
           dndEnabled: nextDnd,
           notifyMode: nextNotify,
+          inboxSound: nextInboxSound,
+          inboxSoundEnabled: nextInboxSoundEnabled,
           firstName: nextFirstName,
           lastName: nextLastName,
           avatarUrl: nextAvatarUrl,
@@ -133,6 +174,8 @@ export async function POST(request: Request) {
       NextResponse.json({
         dndEnabled: nextDnd,
         notifyMode: nextNotify,
+        inboxSound: nextInboxSound,
+        inboxSoundEnabled: nextInboxSoundEnabled,
         firstName: nextFirstName,
         lastName: nextLastName,
         avatarUrl: nextAvatarUrl,
@@ -140,6 +183,19 @@ export async function POST(request: Request) {
       request
     );
   } catch (e) {
+    if (isMissingInboxSoundColumn(e)) {
+      console.error(
+        `chat admin settings POST: DB migration missing. Run migration "${MIGRATION_INBOX_SOUND}" (e.g. drizzle/0004_admin_settings_inbox_sound).`,
+        e
+      );
+      return withCorsHeaders(
+        NextResponse.json(
+          { error: 'db_migration_missing', migration: MIGRATION_INBOX_SOUND },
+          { status: 503 }
+        ),
+        request
+      );
+    }
     console.error('chat admin settings POST', e);
     return withCorsHeaders(
       NextResponse.json({ error: 'Server error' }, { status: 500 }),

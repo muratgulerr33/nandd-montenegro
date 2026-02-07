@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MessageCircle, Loader2 } from 'lucide-react';
+import { unlockInboxAudio, playInboxSound } from '@/lib/chat/inbox-sound';
 import { cn } from '@/lib/utils';
 
 const CHAT_STORAGE_KEY = 'nandd_chat';
@@ -98,6 +99,8 @@ async function sendMessage(
   return { ok: true, id: (data as { id: string }).id, createdAt: (data as { createdAt: string }).createdAt };
 }
 
+const GUEST_SOUND_PRESET = 'soft_click';
+
 export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ChatState | null>(null);
@@ -106,7 +109,16 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
   const [startError, setStartError] = useState<string | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
+  const lastOpenedAtRef = useRef<number>(0);
+  const prevUnreadCountRef = useRef(0);
+
+  // Restore state from localStorage so we can poll for unread when drawer is closed
+  useEffect(() => {
+    const saved = loadChatState();
+    if (saved && !state) setState(saved);
+  }, []);
 
   const ensureState = useCallback(async (): Promise<ChatState> => {
     let s = loadChatState();
@@ -124,6 +136,41 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
     const list = await fetchMessages(conversationId);
     setMessages(list);
   }, []);
+
+  // When drawer opens: mark all current messages as seen (reset badge)
+  useEffect(() => {
+    if (open) {
+      lastOpenedAtRef.current = Date.now();
+      setUnreadCount(0);
+      prevUnreadCountRef.current = 0;
+    }
+  }, [open]);
+
+  // When drawer is closed and we have a conversation: poll and compute unread (admin messages since last open)
+  useEffect(() => {
+    if (open || !state?.conversationId) return;
+    let mounted = true;
+    const poll = async () => {
+      const list = await fetchMessages(state.conversationId);
+      if (!mounted) return;
+      const since = lastOpenedAtRef.current;
+      const count = list.filter(
+        (m) => m.sender === 'admin' && new Date(m.createdAt).getTime() > since
+      ).length;
+      setUnreadCount(count);
+      if (count > prevUnreadCountRef.current) {
+        prevUnreadCountRef.current = count;
+        void playInboxSound(GUEST_SOUND_PRESET);
+      }
+      prevUnreadCountRef.current = count;
+    };
+    poll();
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, [open, state?.conversationId]);
 
   useEffect(() => {
     if (!open) return;
@@ -210,8 +257,9 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
         <button
           type="button"
           aria-label={triggerLabel}
+          onPointerDown={() => void unlockInboxAudio()}
           className={cn(
-            'flex size-14 shrink-0 items-center justify-center rounded-full -translate-y-1',
+            'relative flex size-14 shrink-0 items-center justify-center rounded-full -translate-y-1',
             'bg-primary text-primary-foreground shadow-popover',
             'ring-1 ring-border/60',
             'hover:bg-primary/90 transition-transform active:scale-[0.98]',
@@ -219,6 +267,14 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
           )}
         >
           <MessageCircle className="size-6" aria-hidden />
+          {!open && unreadCount > 0 && (
+            <span
+              className="absolute -right-1 -top-1 flex min-w-[1.25rem] items-center justify-center rounded-full bg-destructive px-1.5 py-0.5 text-[0.65rem] font-medium text-destructive-foreground"
+              aria-hidden
+            >
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </button>
       </DrawerTrigger>
       <DrawerContent className="max-h-[85dvh] flex flex-col">
@@ -251,13 +307,15 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
                   <div
                     key={m.id}
                     className={cn(
-                      'rounded-lg px-3 py-2 max-w-[85%]',
+                      'rounded-lg px-3 py-2 max-w-[85%] whitespace-pre-wrap break-words',
                       m.sender === 'guest'
-                        ? 'ml-auto bg-primary text-primary-foreground'
-                        : 'mr-auto bg-surface-1 text-foreground border border-border'
+                        ? 'ml-auto bg-primary text-white [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white [&_strong]:!text-white [&_*]:!text-white'
+                        : 'mr-auto bg-muted text-foreground'
                     )}
                   >
-                    <p className="t-body">{m.body}</p>
+                    <p className={cn('t-body', m.sender === 'guest' ? '!text-white' : 'text-foreground')}>
+                      {m.body}
+                    </p>
                   </div>
                 ))}
               </div>

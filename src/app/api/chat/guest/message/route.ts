@@ -59,6 +59,10 @@ export async function POST(request: Request) {
       );
     }
 
+    // V1: Guest messages are always saved even when status === 'closed'. hasUnread stays true so admin sees it in closed filter.
+    // Optional: auto-reopen on new guest message — uncomment the following to set status to 'open':
+    // await db.update(conversations).set({ status: 'open' }).where(eq(conversations.id, conversationId));
+
     const [msg] = await db
       .insert(messages)
       .values({

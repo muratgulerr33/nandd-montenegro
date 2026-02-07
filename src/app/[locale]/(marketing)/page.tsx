@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
-import { StickyActionsDock } from '@/components/sticky-actions-dock';
 import { getTranslations } from 'next-intl/server';
 
 const HERO_DESKTOP = '/images/home/hero/hero-montenegro-exterior-01_16x9.webp';
@@ -239,8 +238,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <StickyActionsDock />
     </div>
   );
 }

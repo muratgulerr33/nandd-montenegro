@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -44,6 +45,10 @@ next-env.d.ts
 
 # scripts (local / do not commit)
 /scripts
+
+# PageSpeed / temp reports (do not commit)
+*.mhtml
+public/*.mhtml
 
 # root-only report / temp docs (do not commit)
 /REPORT.md

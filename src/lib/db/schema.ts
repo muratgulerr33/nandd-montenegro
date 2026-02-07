@@ -51,6 +51,8 @@ export const adminSettings = pgTable('admin_settings', {
   id: integer('id').primaryKey().default(1),
   dndEnabled: boolean('dnd_enabled').notNull().default(false),
   notifyMode: notifyModeEnum('notify_mode').notNull().default('every_message'),
+  inboxSound: text('inbox_sound').default('soft_click'),
+  inboxSoundEnabled: boolean('inbox_sound_enabled').notNull().default(true),
   firstName: text('first_name'),
   lastName: text('last_name'),
   avatarUrl: text('avatar_url'),

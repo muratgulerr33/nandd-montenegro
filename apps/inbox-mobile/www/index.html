@@ -12,25 +12,21 @@
 </head>
 <body>
   <p id="status" class="loading">Yükleniyor…</p>
+  <script src="inbox-config.js"></script>
   <script>
     (function() {
       var params = new URLSearchParams(window.location.search);
-      var secret = params.get('key');
-      var baseUrl = params.get('base') || '';
-      if (!baseUrl && window.Capacitor && window.Capacitor.getServerUrl) {
-        baseUrl = window.Capacitor.getServerUrl().replace(/\/$/, '');
+      var key = params.get('key');
+      var base = params.get('base');
+      var locale = params.get('locale');
+      var c = window.__INBOX_PUSH_CONFIG__;
+      if (!c) return;
+      if (base) c.baseUrl = base.replace(/\/$/, '');
+      if (key) c.secret = key;
+      if (locale) c.locale = locale;
+      if (!c.secret || c.secret === '<PLACEHOLDER>') {
+        document.getElementById('status').innerHTML = 'Erişim için <b>inbox-config.js</b> içinde secret (ADMIN_INBOX_SECRET) yazın veya <b>?key=ADMIN_INBOX_SECRET</b> ile girin. Örn: <a href="?key=YOUR_SECRET">?key=YOUR_SECRET</a>';
       }
-      if (!baseUrl) baseUrl = window.location.origin;
-
-      if (!secret) {
-        document.getElementById('status').innerHTML = 'Erişim için <b>?key=ADMIN_INBOX_SECRET</b> ile girin. Örn: <a href="?key=YOUR_SECRET">?key=YOUR_SECRET</a>';
-        return;
-      }
-      window.__INBOX_PUSH_CONFIG__ = {
-        baseUrl: baseUrl,
-        secret: secret,
-        locale: params.get('locale') || 'tr'
-      };
     })();
   </script>
   <script src="register-push.js"></script>
