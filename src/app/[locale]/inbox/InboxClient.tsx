@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 const POLL_INTERVAL_MS = 3000;
@@ -27,14 +27,21 @@ function useAdminApi(secret: string | null) {
   const headers = (): HeadersInit =>
     secret ? { 'x-admin-secret': secret } : {};
 
-  const getConversations = useCallback(async (): Promise<Conversation[]> => {
-    if (!secret) return [];
-    const res = await fetch('/api/chat/admin/conversations', {
-      headers: headers(),
-    });
-    if (!res.ok) return [];
-    return res.json();
-  }, [secret]);
+  const getConversations = useCallback(
+    async (cursor?: string | null): Promise<{
+      items: Conversation[];
+      nextCursor: string | null;
+    }> => {
+      if (!secret) return { items: [], nextCursor: null };
+      const url = new URL('/api/chat/admin/conversations', window.location.origin);
+      url.searchParams.set('limit', '10');
+      if (cursor) url.searchParams.set('cursor', cursor);
+      const res = await fetch(url.toString(), { headers: headers() });
+      if (!res.ok) return { items: [], nextCursor: null };
+      return res.json();
+    },
+    [secret]
+  );
 
   const getMessages = useCallback(
     async (conversationId: string): Promise<Message[]> => {
@@ -74,6 +81,8 @@ export function InboxClient({
 }) {
   const api = useAdminApi(secret);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(
     initialConversationId ?? null
   );
@@ -81,16 +90,25 @@ export function InboxClient({
   const [reply, setReply] = useState('');
   const [sending, setSending] = useState(false);
 
+  const loadPage = useCallback(
+    async (cursor?: string | null) => {
+      const { items, nextCursor: next } = await api.getConversations(cursor);
+      if (!cursor) {
+        setConversations(items);
+      } else {
+        setConversations((prev) => [...prev, ...items]);
+      }
+      setNextCursor(next);
+    },
+    [api]
+  );
+
   useEffect(() => {
     if (!secret) return;
-    const load = async () => {
-      const list = await api.getConversations();
-      setConversations(list);
-    };
-    load();
-    const interval = setInterval(load, POLL_INTERVAL_MS);
+    loadPage(null);
+    const interval = setInterval(() => loadPage(null), POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [secret, api]);
+  }, [secret, loadPage]);
 
   useEffect(() => {
     if (!selectedId) {
@@ -105,6 +123,15 @@ export function InboxClient({
     const interval = setInterval(load, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [selectedId, api]);
+
+  const handleLoadMore = async () => {
+    if (!nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    const { items, nextCursor: next } = await api.getConversations(nextCursor);
+    setConversations((prev) => [...prev, ...items]);
+    setNextCursor(next);
+    setLoadingMore(false);
+  };
 
   const handleSend = async () => {
     const trimmed = reply.trim();
@@ -125,7 +152,7 @@ export function InboxClient({
         <CardHeader className="border-b border-border">
           <h1 className="t-h5 text-foreground">Konuşmalar</h1>
         </CardHeader>
-        <CardContent className="flex-1 overflow-y-auto p-0">
+        <CardContent className="flex-1 overflow-y-auto p-0 flex flex-col">
           {conversations.length === 0 && (
             <p className="t-body text-muted-foreground p-4">Henüz konuşma yok.</p>
           )}
@@ -135,19 +162,30 @@ export function InboxClient({
               type="button"
               onClick={() => setSelectedId(c.id)}
               className={cn(
-                'w-full text-left px-4 py-3 border-b border-border last:border-0',
+                'w-full text-left px-4 py-3 border-b border-border last:border-0 shrink-0',
                 'hover:bg-surface-1 transition-colors',
                 selectedId === c.id && 'bg-surface-1'
               )}
             >
-              <p className="t-small text-muted-foreground truncate">
-                {c.visitorId}
-              </p>
+              <p className="t-small text-muted-foreground truncate">{c.visitorId}</p>
               <p className="t-caption text-muted-foreground">
                 {new Date(c.lastMessageAt).toLocaleString('tr-TR')}
               </p>
             </button>
           ))}
+          {nextCursor && (
+            <div className="p-2 border-t border-border shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+              >
+                {loadingMore ? 'Yükleniyor…' : 'Daha fazla yükle'}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
       <Card className="flex-1 flex flex-col min-w-0 bg-surface-2 shadow-soft border-border">
@@ -158,9 +196,7 @@ export function InboxClient({
         </CardHeader>
         <CardContent className="flex-1 flex flex-col min-h-0 p-4">
           {!selectedId ? (
-            <p className="t-body text-muted-foreground">
-              Soldan bir konuşma seçin.
-            </p>
+            <p className="t-body text-muted-foreground">Soldan bir konuşma seçin.</p>
           ) : (
             <>
               <div className="flex-1 overflow-y-auto space-y-3 mb-4 min-h-[200px]">
