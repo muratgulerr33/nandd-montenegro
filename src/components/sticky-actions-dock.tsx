@@ -2,13 +2,14 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { Phone, MessageCircle } from 'lucide-react';
+import { ChatDrawer } from '@/components/chat-drawer';
 import {
-  IconWhatsApp,
-  IconInstagram,
-  IconTelegram,
-  IconYouTube,
-} from '@/components/icons/brand';
+  DockPhoneCall,
+  DockWhatsApp,
+  DockInstagram,
+  DockTelegram,
+  DockYouTube,
+} from '@/components/icons/dock-social';
 import { cn } from '@/lib/utils';
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
@@ -24,11 +25,11 @@ const DOCK_ACTION_IDS = [
 ] as const;
 
 const DOCK_ICONS = {
-  phone: Phone,
-  whatsapp: IconWhatsApp,
-  instagram: IconInstagram,
-  telegram: IconTelegram,
-  youtube: IconYouTube,
+  phone: DockPhoneCall,
+  whatsapp: DockWhatsApp,
+  instagram: DockInstagram,
+  telegram: DockTelegram,
+  youtube: DockYouTube,
 } as const;
 
 function lerp(a: number, b: number, t: number) {
@@ -141,7 +142,7 @@ export function StickyActionsDock() {
     <div
       ref={dockRef}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 lg:hidden',
+        'fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 md:hidden',
         'pb-[calc(env(safe-area-inset-bottom,0px)+12px)]'
       )}
       aria-hidden
@@ -151,8 +152,7 @@ export function StickyActionsDock() {
         <div
           className={cn(
             'flex h-14 items-center gap-1 rounded-full p-1.5',
-            'border border-border/70 shadow-popover',
-            'bg-background/75 [@supports(backdrop-filter:blur(0px))]:bg-background/60 [@supports(backdrop-filter:blur(0px))]:backdrop-blur-xl [@supports(backdrop-filter:blur(0px))]:backdrop-saturate-150'
+            'bg-background/70 backdrop-blur border border-border/60 shadow-popover'
           )}
         >
           {DOCK_ACTION_IDS.map((id) => {
@@ -163,42 +163,25 @@ export function StickyActionsDock() {
                 key={id}
                 href="#"
                 aria-label={label}
+                aria-disabled="true"
+                tabIndex={-1}
                 className={cn(
-                  'flex size-11 shrink-0 items-center justify-center rounded-full',
-                  'text-foreground hover:bg-muted/80',
-                  'transition-transform active:scale-[0.98]',
+                  'grid h-11 w-11 shrink-0 place-items-center rounded-full',
+                  'text-foreground hover:opacity-90 active:scale-[0.98]',
+                  'transition-[opacity,transform]',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
                 )}
                 onClick={(e) => e.preventDefault()}
               >
-                {id === 'phone' ? (
-                  <Phone
-                    className="size-5"
-                    strokeWidth={1.75}
-                    aria-hidden
-                  />
-                ) : (
-                  <Icon className="size-5" aria-hidden />
-                )}
+                <span className="flex h-5 w-5 items-center justify-center">
+                  <Icon className="block size-5" aria-hidden />
+                </span>
               </a>
             );
           })}
         </div>
         {/* Chat bubble */}
-        <a
-          href="#"
-          aria-label={t('chat')}
-          className={cn(
-            'flex size-14 shrink-0 items-center justify-center rounded-full -translate-y-1',
-            'bg-primary text-primary-foreground shadow-popover',
-            'ring-1 ring-border/60',
-            'hover:bg-primary/90 transition-transform active:scale-[0.98]',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-          )}
-          onClick={(e) => e.preventDefault()}
-        >
-          <MessageCircle className="size-6" aria-hidden />
-        </a>
+        <ChatDrawer triggerLabel={t('chat')} />
       </div>
     </div>
   );
