@@ -7,7 +7,7 @@
 import * as admin from 'firebase-admin';
 import { db } from '@/lib/db';
 import { adminDevices } from '@/lib/db/schema';
-import { inArray } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 let initialized = false;
 
@@ -78,4 +78,52 @@ export async function sendToTokens(
   } catch (err) {
     console.error('FCM sendToTokens', err);
   }
+}
+
+export type TestPushResult = { sentCount: number; failedCount: number };
+
+/**
+ * Send a test notification to all active admin devices. Returns counts.
+ * Invalid tokens are marked inactive.
+ */
+export async function sendTestPush(): Promise<TestPushResult> {
+  const messaging = init();
+  const result: TestPushResult = { sentCount: 0, failedCount: 0 };
+  if (!messaging) return result;
+
+  const rows = await db
+    .select({ fcmToken: adminDevices.fcmToken })
+    .from(adminDevices)
+    .where(eq(adminDevices.isActive, true));
+  const tokens = rows.map((r) => r.fcmToken).filter(Boolean);
+  if (tokens.length === 0) return result;
+
+  try {
+    const response = await messaging.sendEachForMulticast({
+      tokens,
+      notification: { title: 'Test', body: 'Test bildirimi' },
+      data: { type: 'test' },
+      android: { priority: 'high' as const },
+    });
+    response.responses.forEach((r, i) => {
+      if (r.success) result.sentCount += 1;
+      else result.failedCount += 1;
+    });
+    const invalidTokens: string[] = [];
+    response.responses.forEach((r, i) => {
+      if (!r.success && r.error?.code && INVALID_TOKEN_CODES.has(r.error.code)) {
+        invalidTokens.push(tokens[i]);
+      }
+    });
+    if (invalidTokens.length > 0) {
+      await db
+        .update(adminDevices)
+        .set({ isActive: false })
+        .where(inArray(adminDevices.fcmToken, invalidTokens));
+    }
+  } catch (err) {
+    console.error('FCM sendTestPush', err);
+    result.failedCount = tokens.length;
+  }
+  return result;
 }

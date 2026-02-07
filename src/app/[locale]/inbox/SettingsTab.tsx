@@ -6,7 +6,82 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+
+type TestPushResult = {
+  ok: boolean;
+  ms: number;
+  sentCount: number;
+  failedCount: number;
+};
+
+function TestPushCard({ secret }: { secret: string }) {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<TestPushResult | null>(null);
+
+  const run = async () => {
+    setLoading(true);
+    setResult(null);
+    const start = Date.now();
+    try {
+      const res = await fetch('/api/chat/admin/test-push', {
+        method: 'POST',
+        headers: { 'x-admin-secret': secret },
+      });
+      const data = await res.json().catch(() => ({}));
+      setResult({
+        ok: res.ok && data.ok === true,
+        ms: data.ms ?? Date.now() - start,
+        sentCount: data.sentCount ?? 0,
+        failedCount: data.failedCount ?? 0,
+      });
+    } catch {
+      setResult({
+        ok: false,
+        ms: Date.now() - start,
+        sentCount: 0,
+        failedCount: 0,
+      });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <Card className="bg-surface-2 border-border shadow-soft">
+      <CardHeader className="pb-2">
+        <h2 className="t-small font-medium text-foreground">Push Test</h2>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <p className="t-caption text-muted-foreground">
+          Aktif cihazlara test bildirimi gönderir.
+        </p>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={run}
+          disabled={loading}
+        >
+          {loading ? 'Gönderiliyor…' : 'Test Push Gönder'}
+        </Button>
+        {result && (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <Badge
+              variant={result.ok ? 'default' : 'destructive'}
+              className={result.ok ? 'bg-primary' : undefined}
+            >
+              {result.ok ? 'Gönderildi' : 'Hata'}
+            </Badge>
+            <span className="t-caption text-muted-foreground">
+              {result.ms} ms · {result.sentCount} başarılı
+              {result.failedCount > 0 ? `, ${result.failedCount} başarısız` : ''}
+            </span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 type NotifyMode = 'first_message' | 'every_message' | 'silent';
 
@@ -184,14 +259,7 @@ export function SettingsTab({ secret }: { secret: string }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-surface-2 border-border shadow-soft">
-          <CardHeader className="pb-2">
-            <h2 className="t-small font-medium text-foreground">Push Test</h2>
-          </CardHeader>
-          <CardContent>
-            <p className="t-caption text-muted-foreground">Yakında</p>
-          </CardContent>
-        </Card>
+        <TestPushCard secret={secret} />
 
         <Card className="bg-surface-2 border-border shadow-soft">
           <CardHeader className="pb-2">
