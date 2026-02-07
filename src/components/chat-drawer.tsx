@@ -15,7 +15,8 @@ import { unlockInboxAudio, playInboxSound } from '@/lib/chat/inbox-sound';
 import { cn } from '@/lib/utils';
 
 const CHAT_STORAGE_KEY = 'nandd_chat';
-const POLL_INTERVAL_MS = 3000;
+const POLL_INTERVAL_MS = 5000; // drawer açıkken 5 sn
+const POLL_INTERVAL_WHEN_CLOSED_MS = 15000; // drawer kapalıyken 15 sn
 
 type ChatState = {
   conversationId: string;
@@ -118,7 +119,7 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
   useEffect(() => {
     const saved = loadChatState();
     if (saved && !state) setState(saved);
-  }, []);
+  }, [state]);
 
   const ensureState = useCallback(async (): Promise<ChatState> => {
     let s = loadChatState();
@@ -146,11 +147,12 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
     }
   }, [open]);
 
-  // When drawer is closed and we have a conversation: poll and compute unread (admin messages since last open)
+  // When drawer is closed and we have a conversation: poll (less often) for unread badge. Skip when tab not visible.
   useEffect(() => {
     if (open || !state?.conversationId) return;
     let mounted = true;
     const poll = async () => {
+      if (document.visibilityState !== 'visible') return;
       const list = await fetchMessages(state.conversationId);
       if (!mounted) return;
       const since = lastOpenedAtRef.current;
@@ -165,7 +167,7 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
       prevUnreadCountRef.current = count;
     };
     poll();
-    const interval = setInterval(poll, POLL_INTERVAL_MS);
+    const interval = setInterval(poll, POLL_INTERVAL_WHEN_CLOSED_MS);
     return () => {
       mounted = false;
       clearInterval(interval);
@@ -183,6 +185,7 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
         await loadMessages(s.conversationId);
         const interval = setInterval(async () => {
           if (!mounted) return;
+          if (document.visibilityState !== 'visible') return;
           const list = await fetchMessages(s.conversationId);
           if (mounted) setMessages(list);
         }, POLL_INTERVAL_MS);

@@ -39,7 +39,8 @@ function useIsMobile(): boolean {
   return isMobile;
 }
 
-const POLL_INTERVAL_MS = 3000;
+const ADMIN_POLL_VISIBLE_MS = 5000;   // sekme görünürken 5 sn
+const ADMIN_POLL_HIDDEN_MS = 15000;  // sekme gizliyken 15 sn
 const POLL_BACKOFF_MAX_MS = 30000;
 
 type Conversation = {
@@ -77,8 +78,10 @@ function useAdminApi(secret: string | null) {
     [secret]
   );
 
-  const apiHeaders = (): HeadersInit =>
-    secret ? { 'x-admin-secret': secret } : {};
+  const apiHeaders = useCallback(
+    (): HeadersInit => (secret ? { 'x-admin-secret': secret } : {}),
+    [secret]
+  );
 
   const sendReply = useCallback(
     async (conversationId: string, body: string): Promise<boolean> => {
@@ -90,7 +93,7 @@ function useAdminApi(secret: string | null) {
       });
       return res.ok;
     },
-    [secret]
+    [secret, apiHeaders]
   );
 
   const setConversationStatus = useCallback(
@@ -106,7 +109,7 @@ function useAdminApi(secret: string | null) {
       });
       return res.ok;
     },
-    [secret]
+    [secret, apiHeaders]
   );
 
   return {
@@ -145,8 +148,17 @@ export function InboxClient({
   const [reply, setReply] = useState('');
   const [sending, setSending] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [isTabVisible, setIsTabVisible] = useState(
+    () => (typeof document !== 'undefined' ? document.visibilityState === 'visible' : true)
+  );
   const prevRef = useRef<Record<string, { hasUnread: boolean; lastMessageAt: string | null }>>({});
   const bootstrappedRef = useRef(false);
+
+  useEffect(() => {
+    const onVisibility = () => setIsTabVisible(document.visibilityState === 'visible');
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
 
   // Sync URL conv param into state (deep-link / browser back)
   const urlConv = searchParams.get('conv');
@@ -166,7 +178,7 @@ export function InboxClient({
       setSelectedId(null);
       if (isMobile) setViewMode('list');
     }
-  }, [urlConv, isMobile, api]);
+  }, [urlConv, selectedId, isMobile, api]);
 
   // On mobile with initial conv, open detail view
   useEffect(() => {
@@ -328,11 +340,11 @@ export function InboxClient({
     [api, secret]
   );
 
-  // --- Conversations polling: single interval, visibility-aware, backoff, no overlap
+  // --- Conversations polling: interval sekme görünürken 5 sn, gizliyken 15 sn
   const conversationsTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const conversationsInFlightRef = useRef(false);
   const conversationsBackoffUntilRef = useRef(0);
-  const conversationsBackoffMsRef = useRef(POLL_INTERVAL_MS);
+  const conversationsBackoffMsRef = useRef(ADMIN_POLL_VISIBLE_MS);
   const loadPageRef = useRef(loadPage);
   loadPageRef.current = loadPage;
 
@@ -341,7 +353,7 @@ export function InboxClient({
     conversationsInFlightRef.current = true;
     try {
       await loadPageRef.current(null);
-      conversationsBackoffMsRef.current = POLL_INTERVAL_MS;
+      conversationsBackoffMsRef.current = ADMIN_POLL_VISIBLE_MS;
     } catch {
       conversationsBackoffUntilRef.current = Date.now() + conversationsBackoffMsRef.current;
       conversationsBackoffMsRef.current = Math.min(
@@ -356,15 +368,16 @@ export function InboxClient({
   const refreshConversationsRef = useRef(refreshConversations);
   refreshConversationsRef.current = refreshConversations;
 
+  const conversationsPollMs = isTabVisible ? ADMIN_POLL_VISIBLE_MS : ADMIN_POLL_HIDDEN_MS;
+
   useEffect(() => {
     if (!secret) return;
     if (conversationsTimerRef.current) return; // StrictMode: avoid double interval
     loadPageRef.current(null);
     conversationsTimerRef.current = setInterval(() => {
-      if (document.visibilityState !== 'visible') return;
       if (Date.now() < conversationsBackoffUntilRef.current) return;
       void refreshConversationsRef.current();
-    }, POLL_INTERVAL_MS);
+    }, conversationsPollMs);
 
     const onVisibility = () => {
       if (document.visibilityState === 'visible') void refreshConversationsRef.current();
@@ -380,17 +393,19 @@ export function InboxClient({
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('focus', onFocus);
     };
-  }, [secret]);
+  }, [secret, conversationsPollMs]);
 
-  // --- Messages polling: single interval, visibility-aware, backoff, no overlap
+  // --- Messages polling: interval sekme görünürken 5 sn, gizliyken 15 sn
   const messagesTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const messagesInFlightRef = useRef(false);
   const messagesBackoffUntilRef = useRef(0);
-  const messagesBackoffMsRef = useRef(POLL_INTERVAL_MS);
+  const messagesBackoffMsRef = useRef(ADMIN_POLL_VISIBLE_MS);
   const selectedIdRef = useRef(selectedId);
   const getMessagesRef = useRef(api.getMessages);
   selectedIdRef.current = selectedId;
   getMessagesRef.current = api.getMessages;
+
+  const messagesPollMs = isTabVisible ? ADMIN_POLL_VISIBLE_MS : ADMIN_POLL_HIDDEN_MS;
 
   useEffect(() => {
     if (!secret || !selectedId) {
@@ -409,7 +424,7 @@ export function InboxClient({
     load();
     messagesTimerRef.current = setInterval(() => {
       const id = selectedIdRef.current;
-      if (!id || document.visibilityState !== 'visible') return;
+      if (!id) return;
       if (Date.now() < messagesBackoffUntilRef.current) return;
       if (messagesInFlightRef.current) return;
       messagesInFlightRef.current = true;
@@ -417,7 +432,7 @@ export function InboxClient({
         .current(id)
         .then((list) => {
           setMessages(list);
-          messagesBackoffMsRef.current = POLL_INTERVAL_MS;
+          messagesBackoffMsRef.current = ADMIN_POLL_VISIBLE_MS;
         })
         .catch(() => {
           messagesBackoffUntilRef.current = Date.now() + messagesBackoffMsRef.current;
@@ -429,7 +444,7 @@ export function InboxClient({
         .finally(() => {
           messagesInFlightRef.current = false;
         });
-    }, POLL_INTERVAL_MS);
+    }, messagesPollMs);
 
     const onVisibility = () => {
       if (document.visibilityState === 'visible') {
@@ -451,7 +466,7 @@ export function InboxClient({
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('focus', onFocus);
     };
-  }, [secret, selectedId]);
+  }, [secret, selectedId, messagesPollMs]);
 
   const handleLoadMore = async () => {
     if (!nextCursor || loadingMore) return;

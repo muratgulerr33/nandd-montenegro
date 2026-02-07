@@ -256,8 +256,10 @@ type SettingsGetResult =
   | { ok: false; status: number };
 
 function useSettingsApi(secret: string | null) {
-  const headers = (): HeadersInit =>
-    secret ? { 'x-admin-secret': secret } : {};
+  const headers = useCallback(
+    (): HeadersInit => (secret ? { 'x-admin-secret': secret } : {}),
+    [secret]
+  );
 
   const get = useCallback(async (): Promise<SettingsGetResult> => {
     if (!secret) return { ok: false, status: 401 };
@@ -265,7 +267,7 @@ function useSettingsApi(secret: string | null) {
     if (!res.ok) return { ok: false, status: res.status };
     const data = (await res.json()) as SettingsState;
     return { ok: true, data };
-  }, [secret]);
+  }, [secret, headers]);
 
   const save = useCallback(
     async (patch: Partial<SettingsState>): Promise<SettingsState | null> => {
@@ -278,7 +280,7 @@ function useSettingsApi(secret: string | null) {
       if (!res.ok) return null;
       return res.json();
     },
-    [secret]
+    [secret, headers]
   );
 
   return { get, save };
@@ -288,7 +290,9 @@ export function SettingsTab({ secret }: { secret: string }) {
   const api = useSettingsApi(secret);
   const didInitRef = useRef(false);
   const apiGetRef = useRef(api.get);
-  apiGetRef.current = api.get;
+  useEffect(() => {
+    apiGetRef.current = api.get;
+  }, [api.get]);
 
   const [settings, setSettings] = useState<SettingsState | null>(null);
   const [loadError, setLoadError] = useState<number | null>(null);
@@ -323,8 +327,8 @@ export function SettingsTab({ secret }: { secret: string }) {
     if (!secret) return;
     if (didInitRef.current) return;
     didInitRef.current = true;
-    setLoadError(null);
     const load = async () => {
+      setLoadError(null);
       const result = await apiGetRef.current();
       if (result.ok) {
         setSettings(result.data);

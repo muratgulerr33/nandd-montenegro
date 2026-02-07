@@ -105,7 +105,7 @@ export async function sendTestPush(): Promise<TestPushResult> {
       data: { type: 'test' },
       android: { priority: 'high' as const },
     });
-    response.responses.forEach((r, i) => {
+    response.responses.forEach((r) => {
       if (r.success) result.sentCount += 1;
       else result.failedCount += 1;
     });

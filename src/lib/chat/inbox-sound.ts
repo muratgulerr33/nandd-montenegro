@@ -23,9 +23,14 @@ export function getInboxAudioContextState(): { hasCtx: boolean; state: string } 
   return { hasCtx: ctx != null, state: ctx?.state ?? 'none' };
 }
 
-function getAudioContext(): AudioContext | null {
+type AudioContextConstructor = new (
+  contextOptions?: AudioContextOptions
+) => AudioContext;
+
+function getAudioContext(): AudioContextConstructor | null {
   if (typeof window === 'undefined') return null;
-  const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  const Ctx = window.AudioContext ||
+    (window as unknown as { webkitAudioContext?: AudioContextConstructor }).webkitAudioContext;
   return Ctx ?? null;
 }
 

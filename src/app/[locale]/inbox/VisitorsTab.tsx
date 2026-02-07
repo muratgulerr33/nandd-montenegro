@@ -27,7 +27,7 @@ function useVisitorsApi(secret: string | null) {
 export function VisitorsTab({ secret }: { secret: string }) {
   const api = useVisitorsApi(secret);
   const [items, setItems] = useState<VisitorItem[]>([]);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [, setNextCursor] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const loadedRef = useRef(false);
@@ -48,8 +48,9 @@ export function VisitorsTab({ secret }: { secret: string }) {
   useEffect(() => {
     if (!secret || loadedRef.current) return;
     loadedRef.current = true;
-    setLoading(true);
-    load(null).finally(() => setLoading(false));
+    queueMicrotask(() => {
+      load(null).finally(() => setLoading(false));
+    });
   }, [secret, load]);
 
   const filtered = search.trim()
