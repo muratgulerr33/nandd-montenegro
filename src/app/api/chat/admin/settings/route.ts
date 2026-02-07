@@ -3,12 +3,17 @@ import { db } from '@/lib/db';
 import { adminSettings } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
+import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
 
 const ROW_ID = 1;
 
+export async function OPTIONS(request: Request) {
+  return corsOptionsResponse(request);
+}
+
 export async function GET(request: Request) {
   if (!requireAdminSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }
   try {
     const [row] = await db
@@ -18,25 +23,34 @@ export async function GET(request: Request) {
       .limit(1);
 
     if (!row) {
-      return NextResponse.json({
-        dndEnabled: false,
-        notifyMode: 'every_message',
-        firstName: null,
-        lastName: null,
-        avatarUrl: null,
-      });
+      return withCorsHeaders(
+        NextResponse.json({
+          dndEnabled: false,
+          notifyMode: 'every_message',
+          firstName: null,
+          lastName: null,
+          avatarUrl: null,
+        }),
+        request
+      );
     }
 
-    return NextResponse.json({
-      dndEnabled: row.dndEnabled,
-      notifyMode: row.notifyMode,
-      firstName: row.firstName ?? null,
-      lastName: row.lastName ?? null,
-      avatarUrl: row.avatarUrl ?? null,
-    });
+    return withCorsHeaders(
+      NextResponse.json({
+        dndEnabled: row.dndEnabled,
+        notifyMode: row.notifyMode,
+        firstName: row.firstName ?? null,
+        lastName: row.lastName ?? null,
+        avatarUrl: row.avatarUrl ?? null,
+      }),
+      request
+    );
   } catch (e) {
     console.error('chat admin settings GET', e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return withCorsHeaders(
+      NextResponse.json({ error: 'Server error' }, { status: 500 }),
+      request
+    );
   }
 }
 
@@ -44,7 +58,7 @@ const NOTIFY_MODES = ['first_message', 'every_message', 'silent'] as const;
 
 export async function POST(request: Request) {
   if (!requireAdminSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }
   try {
     const body = await request.json().catch(() => ({}));
@@ -110,15 +124,21 @@ export async function POST(request: Request) {
         },
       });
 
-    return NextResponse.json({
-      dndEnabled: nextDnd,
-      notifyMode: nextNotify,
-      firstName: nextFirstName,
-      lastName: nextLastName,
-      avatarUrl: nextAvatarUrl,
-    });
+    return withCorsHeaders(
+      NextResponse.json({
+        dndEnabled: nextDnd,
+        notifyMode: nextNotify,
+        firstName: nextFirstName,
+        lastName: nextLastName,
+        avatarUrl: nextAvatarUrl,
+      }),
+      request
+    );
   } catch (e) {
     console.error('chat admin settings POST', e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return withCorsHeaders(
+      NextResponse.json({ error: 'Server error' }, { status: 500 }),
+      request
+    );
   }
 }

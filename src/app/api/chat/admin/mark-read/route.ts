@@ -3,18 +3,26 @@ import { db } from '@/lib/db';
 import { conversations } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
+import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+
+export async function OPTIONS(request: Request) {
+  return corsOptionsResponse(request);
+}
 
 export async function POST(request: Request) {
   if (!requireAdminSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }
   try {
     const body = await request.json().catch(() => ({}));
     const { conversationId } = body as { conversationId?: string };
     if (!conversationId || typeof conversationId !== 'string') {
-      return NextResponse.json(
-        { error: 'conversationId required' },
-        { status: 400 }
+      return withCorsHeaders(
+        NextResponse.json(
+          { error: 'conversationId required' },
+          { status: 400 }
+        ),
+        request
       );
     }
 
@@ -23,9 +31,12 @@ export async function POST(request: Request) {
       .set({ lastAdminReadAt: new Date() })
       .where(eq(conversations.id, conversationId));
 
-    return NextResponse.json({ ok: true });
+    return withCorsHeaders(NextResponse.json({ ok: true }), request);
   } catch (e) {
     console.error('chat admin mark-read', e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return withCorsHeaders(
+      NextResponse.json({ error: 'Server error' }, { status: 500 }),
+      request
+    );
   }
 }

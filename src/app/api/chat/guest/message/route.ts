@@ -4,10 +4,15 @@ import { adminDevices, adminSettings, conversations, messages } from '@/lib/db/s
 import { eq } from 'drizzle-orm';
 import { sendPushToAdminDevices } from '@/lib/chat/push';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
 
 const BODY_MAX = 2000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_PER_MIN = 30;
+
+export async function OPTIONS(request: Request) {
+  return corsOptionsResponse(request);
+}
 
 export async function POST(request: Request) {
   const ip =
@@ -23,19 +28,22 @@ export async function POST(request: Request) {
       body?: string;
     };
     if (!conversationId || !visitorId || typeof text !== 'string') {
-      return NextResponse.json(
-        { error: 'conversationId, visitorId, body required' },
-        { status: 400 }
+      return withCorsHeaders(
+        NextResponse.json(
+          { error: 'conversationId, visitorId, body required' },
+          { status: 400 }
+        ),
+        request
       );
     }
     const trimmed = text.slice(0, BODY_MAX).trim();
     if (!trimmed) {
-      return NextResponse.json({ error: 'body empty' }, { status: 400 });
+      return withCorsHeaders(NextResponse.json({ error: 'body empty' }, { status: 400 }), request);
     }
 
     const rateLimitKey = `${ip}:${visitorId}`;
     if (!checkRateLimit(rateLimitKey, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_PER_MIN)) {
-      return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
+      return withCorsHeaders(NextResponse.json({ error: 'rate_limited' }, { status: 429 }), request);
     }
 
     const [conv] = await db
@@ -43,7 +51,10 @@ export async function POST(request: Request) {
       .from(conversations)
       .where(eq(conversations.id, conversationId));
     if (!conv || conv.visitorId !== visitorId) {
-      return NextResponse.json({ error: 'Conversation not found' }, { status: 404 });
+      return withCorsHeaders(
+        NextResponse.json({ error: 'Conversation not found' }, { status: 404 }),
+        request
+      );
     }
 
     const [msg] = await db
@@ -90,9 +101,16 @@ export async function POST(request: Request) {
       ).catch(() => {});
     }
 
-    return NextResponse.json({ id: msg?.id, createdAt: msg?.createdAt });
+    return withCorsHeaders(
+      NextResponse.json({ id: msg?.id, createdAt: msg?.createdAt }),
+      request
+    );
   } catch (e) {
     console.error('chat guest message', e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return withCorsHeaders(
+      NextResponse.json({ error: 'Server error' }, { status: 500 }),
+      request
+    );
   }
 }
+

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { messages } from '@/lib/db/schema';
-import { eq, gt, and } from 'drizzle-orm';
-import { requireAdminSecret } from '@/lib/chat/admin-auth';
+import { conversations, messages } from '@/lib/db/schema';
+import { eq, and, gt } from 'drizzle-orm';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
 
 export async function OPTIONS(request: Request) {
@@ -10,12 +9,10 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function GET(request: Request) {
-  if (!requireAdminSecret(request)) {
-    return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
-  }
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get('conversationId');
   const after = searchParams.get('after');
+
   if (!conversationId) {
     return withCorsHeaders(
       NextResponse.json(
@@ -25,7 +22,20 @@ export async function GET(request: Request) {
       request
     );
   }
+
   try {
+    const [conv] = await db
+      .select()
+      .from(conversations)
+      .where(eq(conversations.id, conversationId))
+      .limit(1);
+    if (!conv) {
+      return withCorsHeaders(
+        NextResponse.json({ error: 'Conversation not found' }, { status: 404 }),
+        request
+      );
+    }
+
     const afterDate = after ? new Date(after) : null;
     const list = await db
       .select()
@@ -51,7 +61,7 @@ export async function GET(request: Request) {
       request
     );
   } catch (e) {
-    console.error('chat admin messages', e);
+    console.error('chat guest messages', e);
     return withCorsHeaders(
       NextResponse.json({ error: 'Server error' }, { status: 500 }),
       request

@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { conversations } from '@/lib/db/schema';
 import { and, desc, eq, lt, or } from 'drizzle-orm';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
+import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 50;
@@ -38,9 +39,13 @@ function encodeCursor(lastMessageAt: Date, id: string): string {
   ).toString('base64');
 }
 
+export async function OPTIONS(request: Request) {
+  return corsOptionsResponse(request);
+}
+
 export async function GET(request: Request) {
   if (!requireAdminSecret(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }
   try {
     const { searchParams } = new URL(request.url);
@@ -90,19 +95,25 @@ export async function GET(request: Request) {
       c.lastGuestMessageAt != null &&
       (c.lastAdminReadAt == null || c.lastGuestMessageAt > c.lastAdminReadAt);
 
-    return NextResponse.json({
-      items: items.map((c) => ({
-        id: c.id,
-        visitorId: c.visitorId,
-        createdAt: c.createdAt,
-        lastMessageAt: c.lastMessageAt,
-        status: c.status,
-        hasUnread: hasUnread(c),
-      })),
-      nextCursor,
-    });
+    return withCorsHeaders(
+      NextResponse.json({
+        items: items.map((c) => ({
+          id: c.id,
+          visitorId: c.visitorId,
+          createdAt: c.createdAt,
+          lastMessageAt: c.lastMessageAt,
+          status: c.status,
+          hasUnread: hasUnread(c),
+        })),
+        nextCursor,
+      }),
+      request
+    );
   } catch (e) {
     console.error('chat admin conversations', e);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return withCorsHeaders(
+      NextResponse.json({ error: 'Server error' }, { status: 500 }),
+      request
+    );
   }
 }
