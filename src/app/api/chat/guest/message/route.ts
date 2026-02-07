@@ -3,35 +3,17 @@ import { db } from '@/lib/db';
 import { adminDevices, adminSettings, conversations, messages } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { sendPushToAdminDevices } from '@/lib/chat/push';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const BODY_MAX = 2000;
-const RATE_LIMIT_WINDOW_MS = 5000;
-const RATE_LIMIT_MAX = 10;
-
-const ipCounts = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  let entry = ipCounts.get(ip);
-  if (!entry) {
-    ipCounts.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return true;
-  }
-  if (now >= entry.resetAt) {
-    entry = { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS };
-    ipCounts.set(ip, entry);
-    return true;
-  }
-  if (entry.count >= RATE_LIMIT_MAX) return false;
-  entry.count += 1;
-  return true;
-}
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_PER_MIN = 30;
 
 export async function POST(request: Request) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? 'unknown';
-  if (!checkRateLimit(ip)) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-  }
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    request.headers.get('x-real-ip') ??
+    'unknown';
 
   try {
     const body = await request.json();
@@ -49,6 +31,11 @@ export async function POST(request: Request) {
     const trimmed = text.slice(0, BODY_MAX).trim();
     if (!trimmed) {
       return NextResponse.json({ error: 'body empty' }, { status: 400 });
+    }
+
+    const rateLimitKey = `${ip}:${visitorId}`;
+    if (!checkRateLimit(rateLimitKey, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_PER_MIN)) {
+      return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
     }
 
     const [conv] = await db

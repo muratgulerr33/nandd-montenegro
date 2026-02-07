@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const CHAT_STORAGE_KEY = 'nandd_chat';
@@ -49,9 +49,20 @@ function saveChatState(state: ChatState) {
   }
 }
 
+const RATE_LIMIT_MESSAGE = 'Çok fazla istek. Lütfen kısa süre sonra tekrar deneyin.';
+
 async function startConversation(): Promise<ChatState> {
   const res = await fetch('/api/chat/guest/start', { method: 'POST' });
-  if (!res.ok) throw new Error('Failed to start conversation');
+  if (!res.ok) {
+    if (res.status === 429) {
+      const data = await res.json().catch(() => ({}));
+      if ((data as { error?: string }).error === 'rate_limited') {
+        throw new Error(RATE_LIMIT_MESSAGE);
+      }
+    }
+    const text = await res.text().catch(() => '');
+    throw new Error(`Failed to start conversation: ${res.status} ${text.slice(0, 200)}`);
+  }
   const data = (await res.json()) as { conversationId: string; visitorId: string };
   return { conversationId: data.conversationId, visitorId: data.visitorId };
 }
@@ -65,18 +76,26 @@ async function fetchMessages(conversationId: string, after?: string): Promise<Me
   return res.json();
 }
 
+type SendMessageResult =
+  | { ok: true; id: string; createdAt: string }
+  | { ok: false; rateLimited?: boolean; error?: string };
+
 async function sendMessage(
   conversationId: string,
   visitorId: string,
   body: string
-): Promise<{ id: string; createdAt: string } | null> {
+): Promise<SendMessageResult> {
   const res = await fetch('/api/chat/guest/message', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ conversationId, visitorId, body }),
   });
-  if (!res.ok) return null;
-  return res.json();
+  const data = (await res.json().catch(() => ({}))) as { error?: string };
+  if (res.status === 429 && data.error === 'rate_limited') {
+    return { ok: false, rateLimited: true };
+  }
+  if (!res.ok) return { ok: false, error: data.error ?? 'Mesaj gönderilemedi.' };
+  return { ok: true, id: (data as { id: string }).id, createdAt: (data as { createdAt: string }).createdAt };
 }
 
 export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
@@ -85,6 +104,8 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [startError, setStartError] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   const ensureState = useCallback(async (): Promise<ChatState> => {
@@ -107,16 +128,24 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
   useEffect(() => {
     if (!open) return;
     let mounted = true;
+    setStartError(null);
     const run = async () => {
-      const s = await ensureState();
-      if (!mounted) return;
-      await loadMessages(s.conversationId);
-      const interval = setInterval(async () => {
+      try {
+        const s = await ensureState();
         if (!mounted) return;
-        const list = await fetchMessages(s.conversationId);
-        if (mounted) setMessages(list);
-      }, POLL_INTERVAL_MS);
-      return () => clearInterval(interval);
+        await loadMessages(s.conversationId);
+        const interval = setInterval(async () => {
+          if (!mounted) return;
+          const list = await fetchMessages(s.conversationId);
+          if (mounted) setMessages(list);
+        }, POLL_INTERVAL_MS);
+        return () => clearInterval(interval);
+      } catch (err) {
+        if (mounted) {
+          const msg = err instanceof Error ? err.message : 'Konuşma başlatılamadı.';
+          setStartError(msg);
+        }
+      }
     };
     const cleanup = run();
     return () => {
@@ -127,9 +156,21 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
     };
   }, [open, ensureState, loadMessages]);
 
+  const retryStart = useCallback(() => {
+    setStartError(null);
+    setState(null);
+    ensureState().then((s) => {
+      setState(s);
+      loadMessages(s.conversationId);
+    }).catch((err) => {
+      setStartError(err instanceof Error ? err.message : 'Konuşma başlatılamadı.');
+    });
+  }, [ensureState, loadMessages]);
+
   const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed || !state || sending) return;
+    setSendError(null);
     setSending(true);
     const optimistic: Message = {
       id: `opt-${Date.now()}`,
@@ -139,15 +180,27 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
     };
     setMessages((prev) => [...prev, optimistic]);
     setInput('');
-    const result = await sendMessage(state.conversationId, state.visitorId, trimmed);
-    setSending(false);
-    if (result) {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === optimistic.id ? { ...m, id: result.id, createdAt: result.createdAt } : m))
-      );
-    } else {
+    try {
+      const result = await sendMessage(state.conversationId, state.visitorId, trimmed);
+      if (result.ok) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === optimistic.id ? { ...m, id: result.id, createdAt: result.createdAt } : m
+          )
+        );
+      } else {
+        setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
+        setInput(trimmed);
+        setSendError(
+          result.rateLimited ? RATE_LIMIT_MESSAGE : result.error ?? 'Mesaj gönderilemedi. Bağlantıyı kontrol edip tekrar deneyin.'
+        );
+      }
+    } catch {
       setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
       setInput(trimmed);
+      setSendError('Mesaj gönderilemedi. Tekrar deneyin.');
+    } finally {
+      setSending(false);
     }
   };
 
@@ -173,46 +226,92 @@ export function ChatDrawer({ triggerLabel }: { triggerLabel: string }) {
           <DrawerTitle className="t-h6 text-foreground">Sohbet</DrawerTitle>
         </DrawerHeader>
         <div className="flex flex-1 flex-col min-h-0 p-4">
-          <div
-            ref={listRef}
-            className="flex-1 overflow-y-auto space-y-3 mb-4 min-h-[200px] max-h-[40vh]"
-          >
-            {messages.length === 0 && (
-              <p className="t-body text-muted-foreground">Mesaj yazın, en kısa sürede dönüş yapacağız.</p>
-            )}
-            {messages.map((m) => (
+          {startError ? (
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+              <p className="t-body text-destructive" role="alert">
+                Konuşma başlatılamadı. Lütfen tekrar deneyin.
+              </p>
+              <p className="t-caption text-muted-foreground max-w-[280px]">
+                {startError}
+              </p>
+              <Button type="button" onClick={retryStart}>
+                Yeniden dene
+              </Button>
+            </div>
+          ) : (
+            <>
               <div
-                key={m.id}
-                className={cn(
-                  'rounded-lg px-3 py-2 max-w-[85%]',
-                  m.sender === 'guest'
-                    ? 'ml-auto bg-primary text-primary-foreground'
-                    : 'mr-auto bg-surface-1 text-foreground border border-border'
-                )}
+                ref={listRef}
+                className="flex-1 overflow-y-auto space-y-3 mb-4 min-h-[200px] max-h-[40vh]"
               >
-                <p className="t-body">{m.body}</p>
+                {messages.length === 0 && (
+                  <p className="t-body text-muted-foreground">Mesaj yazın, en kısa sürede dönüş yapacağız.</p>
+                )}
+                {messages.map((m) => (
+                  <div
+                    key={m.id}
+                    className={cn(
+                      'rounded-lg px-3 py-2 max-w-[85%]',
+                      m.sender === 'guest'
+                        ? 'ml-auto bg-primary text-primary-foreground'
+                        : 'mr-auto bg-surface-1 text-foreground border border-border'
+                    )}
+                  >
+                    <p className="t-body">{m.body}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <form
-            className="flex gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-          >
-            <Input
-              className="flex-1 bg-surface-1"
-              placeholder="Mesajınız..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={sending}
-              maxLength={2000}
-            />
-            <Button type="submit" disabled={sending || !input.trim()}>
-              Gönder
-            </Button>
-          </form>
+              <form
+                className="flex flex-col gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend();
+                }}
+              >
+                <div className="flex gap-2">
+                  <Input
+                    className="flex-1 bg-surface-1 min-w-0"
+                    placeholder="Mesajınız..."
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      setSendError(null);
+                    }}
+                    disabled={sending}
+                    maxLength={2000}
+                  />
+                  <Button type="submit" disabled={sending || !input.trim()}>
+                    {sending ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin shrink-0" aria-hidden />
+                        Gönderiliyor…
+                      </>
+                    ) : (
+                      'Gönder'
+                    )}
+                  </Button>
+                </div>
+                {sendError && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="t-caption text-destructive flex-1 min-w-0" role="alert">
+                      {sendError}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSendError(null);
+                        handleSend();
+                      }}
+                    >
+                      Tekrar dene
+                    </Button>
+                  </div>
+                )}
+              </form>
+            </>
+          )}
         </div>
       </DrawerContent>
     </Drawer>
