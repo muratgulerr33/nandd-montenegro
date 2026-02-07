@@ -5,6 +5,7 @@ import {
   uuid,
   pgEnum,
   boolean,
+  integer,
 } from 'drizzle-orm/pg-core';
 
 export const conversationStatusEnum = pgEnum('conversation_status', [
@@ -34,6 +35,24 @@ export const messages = pgTable('messages', {
   sender: senderEnum('sender').notNull(),
   body: text('body').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const notifyModeEnum = pgEnum('notify_mode', [
+  'first_message',
+  'every_message',
+  'silent',
+]);
+
+export const adminSettings = pgTable('admin_settings', {
+  id: integer('id').primaryKey().default(1),
+  dndEnabled: boolean('dnd_enabled').notNull().default(false),
+  notifyMode: notifyModeEnum('notify_mode').notNull().default('every_message'),
+  firstName: text('first_name'),
+  lastName: text('last_name'),
+  avatarUrl: text('avatar_url'),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
 });
