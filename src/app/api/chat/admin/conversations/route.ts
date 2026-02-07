@@ -4,6 +4,7 @@ import { conversations } from '@/lib/db/schema';
 import { and, desc, eq, lt, or } from 'drizzle-orm';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+import { ensureDatabaseUrl, ensureAdminInboxSecret } from '@/lib/env';
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 50;
@@ -44,6 +45,8 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function GET(request: Request) {
+  ensureDatabaseUrl();
+  ensureAdminInboxSecret();
   if (!requireAdminSecret(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }

@@ -4,6 +4,7 @@ import { adminSettings } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+import { ensureDatabaseUrl, ensureAdminInboxSecret } from '@/lib/env';
 
 const ROW_ID = 1;
 
@@ -12,6 +13,8 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function GET(request: Request) {
+  ensureDatabaseUrl();
+  ensureAdminInboxSecret();
   if (!requireAdminSecret(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }
@@ -57,6 +60,8 @@ export async function GET(request: Request) {
 const NOTIFY_MODES = ['first_message', 'every_message', 'silent'] as const;
 
 export async function POST(request: Request) {
+  ensureDatabaseUrl();
+  ensureAdminInboxSecret();
   if (!requireAdminSecret(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }

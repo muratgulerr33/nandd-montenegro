@@ -4,12 +4,15 @@ import { messages } from '@/lib/db/schema';
 import { eq, gt, and } from 'drizzle-orm';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+import { ensureDatabaseUrl, ensureAdminInboxSecret } from '@/lib/env';
 
 export async function OPTIONS(request: Request) {
   return corsOptionsResponse(request);
 }
 
 export async function GET(request: Request) {
+  ensureDatabaseUrl();
+  ensureAdminInboxSecret();
   if (!requireAdminSecret(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }

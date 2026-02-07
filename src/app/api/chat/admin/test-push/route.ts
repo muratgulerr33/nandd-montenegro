@@ -2,12 +2,14 @@ import { NextResponse } from 'next/server';
 import { requireAdminSecret } from '@/lib/chat/admin-auth';
 import { sendTestPush } from '@/server/push/fcm';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+import { ensureAdminInboxSecret } from '@/lib/env';
 
 export async function OPTIONS(request: Request) {
   return corsOptionsResponse(request);
 }
 
 export async function POST(request: Request) {
+  ensureAdminInboxSecret();
   if (!requireAdminSecret(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), request);
   }

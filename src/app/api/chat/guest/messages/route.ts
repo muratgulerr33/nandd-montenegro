@@ -3,12 +3,14 @@ import { db } from '@/lib/db';
 import { conversations, messages } from '@/lib/db/schema';
 import { eq, and, gt } from 'drizzle-orm';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+import { ensureDatabaseUrl } from '@/lib/env';
 
 export async function OPTIONS(request: Request) {
   return corsOptionsResponse(request);
 }
 
 export async function GET(request: Request) {
+  ensureDatabaseUrl();
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get('conversationId');
   const after = searchParams.get('after');

@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { sendPushToAdminDevices } from '@/lib/chat/push';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { withCorsHeaders, corsOptionsResponse } from '@/lib/cors';
+import { ensureDatabaseUrl } from '@/lib/env';
 
 const BODY_MAX = 2000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -15,6 +16,7 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function POST(request: Request) {
+  ensureDatabaseUrl();
   const ip =
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     request.headers.get('x-real-ip') ??
