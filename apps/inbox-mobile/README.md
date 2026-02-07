@@ -32,7 +32,9 @@ Admin cihaza push gitmesi için FCM token’ın backend’e kaydedilmesi gerekir
 2. `@capacitor-firebase/messaging` veya Android tarafında FCM token alıp `POST /api/chat/admin/register-device` (header: `x-admin-secret`, body: `{ fcmToken, label }`) ile kaydedin.
 3. Token’ı ya native tarafta alıp API’ye gönderin ya da WebView’da Capacitor bridge ile alıp aynı endpoint’e gönderin.
 
-**MIUI / pil kısıtlaması:** Xiaomi ve bazı Android sürümlerinde uygulama pil tasarrufu ile kısıtlanırsa push gelmeyebilir. Ayarlar → Uygulamalar → NANDD Inbox → Pil tasarrufu: Kısıtlama yok.
+**MIUI / pil kısıtlaması:** Xiaomi ve bazı Android sürümlerinde uygulama pil tasarrufu ile kısıtlanırsa push gelmeyebilir. Ayarlar → Uygulamalar → NANDD Inbox → Pil tasarrufu: **Kısıtlama yok** olarak ayarlayın.
+
+**Push Test:** Test bildirimi göndermek için uygulama içinde bottom nav → **Ayarlar** sekmesi → “Push Test” kartındaki “Test Push Gönder” butonunu kullanın.
 
 ## Build / çalıştırma
 
