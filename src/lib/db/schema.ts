@@ -24,6 +24,8 @@ export const conversations = pgTable('conversations', {
   lastMessageAt: timestamp('last_message_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
+  lastGuestMessageAt: timestamp('last_guest_message_at', { withTimezone: true }),
+  lastAdminReadAt: timestamp('last_admin_read_at', { withTimezone: true }),
   status: conversationStatusEnum('status').notNull().default('open'),
 });
 

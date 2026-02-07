@@ -68,9 +68,10 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    const now = new Date();
     await db
       .update(conversations)
-      .set({ lastMessageAt: new Date() })
+      .set({ lastMessageAt: now, lastGuestMessageAt: now })
       .where(eq(conversations.id, conversationId));
 
     const { adminDevices } = await import('@/lib/db/schema');

@@ -86,6 +86,10 @@ export async function GET(request: Request) {
           )
         : null;
 
+    const hasUnread = (c: (typeof items)[0]) =>
+      c.lastGuestMessageAt != null &&
+      (c.lastAdminReadAt == null || c.lastGuestMessageAt > c.lastAdminReadAt);
+
     return NextResponse.json({
       items: items.map((c) => ({
         id: c.id,
@@ -93,6 +97,7 @@ export async function GET(request: Request) {
         createdAt: c.createdAt,
         lastMessageAt: c.lastMessageAt,
         status: c.status,
+        hasUnread: hasUnread(c),
       })),
       nextCursor,
     });
